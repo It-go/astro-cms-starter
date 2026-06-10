@@ -31,5 +31,7 @@ blocks:
     address: Eksempelvej 1, 9999 Byen
     links:
       - { label: Forside, href: "/" }
+      - { label: Om os, href: "/om-os" }
+      - { label: Nyheder, href: "/nyheder" }
       - { label: English, href: "/en" }
 ---

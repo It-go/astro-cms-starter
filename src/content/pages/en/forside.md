@@ -31,5 +31,7 @@ blocks:
     address: 1 Example Road, City
     links:
       - { label: Home, href: "/en" }
+      - { label: About, href: "/en/om-os" }
+      - { label: News, href: "/nyheder" }
       - { label: Dansk, href: "/" }
 ---

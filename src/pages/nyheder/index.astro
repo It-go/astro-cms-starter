@@ -1,0 +1,22 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../../layouts/Base.astro";
+
+const news = (await getCollection("news")).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
+---
+<Base title="Nyheder" description="Seneste nyt." locale="da">
+  <section>
+    <h1>Nyheder</h1>
+    {news.map((n) => (
+      <article style="margin:24px 0">
+        <h2 style="margin:0 0 4px"><a href={`/nyheder/${n.id}`}>{n.data.title}</a></h2>
+        <time datetime={n.data.date.toISOString()} style="color:#666;font-size:.9rem">
+          {n.data.date.toLocaleDateString("da-DK", { year: "numeric", month: "long", day: "numeric" })}
+        </time>
+        {n.data.summary && <p>{n.data.summary}</p>}
+      </article>
+    ))}
+  </section>
+</Base>

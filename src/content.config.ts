@@ -93,5 +93,15 @@ const pages = defineCollection({
   }),
 });
 
-export const collections = { pages };
+// Nyheder/blog — flad collection (markdown-body renderes). Demo-scaffold; kunder kan slette.
+const news = defineCollection({
+  loader: glob({ pattern: "*.md", base: "./src/content/news" }),
+  schema: z.object({
+    title: z.string(),
+    date: z.coerce.date(),
+    summary: z.string().optional(),
+  }),
+});
+
+export const collections = { pages, news };
 export type Block = z.infer<typeof block>;
