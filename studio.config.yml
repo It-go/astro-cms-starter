@@ -7,6 +7,12 @@
 # backend: udfyldes pr. kunde (B2 git-gateway).
 # backend: { name: github, repo: It-go/<kunde-repo>, branch: main, base_url: https://gateway.studio.itgo.dk }
 
+# Branding — kunden ser ITGo Studio. Overstyr pr. kunde ved onboarding (logo/navn).
+app_title: ITGo Studio
+logo:
+  src: /studio-logo.svg
+  show_in_header: true
+
 media_folder: "public/uploads"
 public_folder: "/uploads"
 
@@ -125,3 +131,18 @@ collections:
                 fields:
                   - { name: label, label: Tekst, widget: string, i18n: true }
                   - { name: href, label: Link, widget: string }
+
+  # Nyheder/blog — flad collection; markdown-body renderes. Kunder kan slette hele collection.
+  - name: news
+    label: Nyheder
+    label_singular: Nyhed
+    folder: src/content/news
+    create: true
+    format: yaml-frontmatter
+    slug: "{{slug}}"
+    identifier_field: title
+    fields:
+      - { name: title, label: Titel, widget: string }
+      - { name: date, label: Dato, widget: datetime, picker_utc: false, format: "YYYY-MM-DD" }
+      - { name: summary, label: Resumé, widget: text, required: false }
+      - { name: body, label: Indhold, widget: markdown }
