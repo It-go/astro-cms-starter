@@ -1,6 +1,7 @@
 ---
-// Basis-layout: <head> med SEO + hreflang + lang. Styling er bevidst minimal
-// (erstattes/brandes via @itgo/design-system i Wave 2). Indhold escapes af Astro.
+// Basis-layout: <head> med SEO + hreflang + lang. Tailwind v4 er wired (global.css);
+// brandes via @itgo/design-system i Wave 2. Indhold escapes af Astro.
+import "../styles/global.css";
 interface Alt {
   locale: string;
   href: string;
@@ -46,7 +47,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
       cite { display: block; margin-top: 8px; color: #666; }
     </style>
   </head>
-  <body>
+  <body class="antialiased">
     <slot />
   </body>
 </html>

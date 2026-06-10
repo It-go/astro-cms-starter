@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
+import tailwindcss from "@tailwindcss/vite";
 
 // ITGo Studio Astro CMS starter (C1 / ITG-812).
 // Statisk output → Cloudflare Pages. SSR-adapter (@astrojs/cloudflare) tilføjes
@@ -16,4 +17,5 @@ export default defineConfig({
     routing: { prefixDefaultLocale: false },
   },
   integrations: [sitemap()],
+  vite: { plugins: [tailwindcss()] },
 });

@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+/* ITGo design-tokens (lean v1). Erstattes/udvides af @itgo/design-system i Wave 2. */
+@theme {
+  --color-ink: #1a1a1a;
+  --color-brand: #1a1a1a;
+}
