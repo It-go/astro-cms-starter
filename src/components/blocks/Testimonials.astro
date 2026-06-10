@@ -1,0 +1,16 @@
+---
+interface Props {
+  heading?: string;
+  items?: { quote: string; author?: string }[];
+}
+const { heading, items = [] } = Astro.props;
+---
+<section class="st-testimonials">
+  {heading && <h2>{heading}</h2>}
+  {items.map((t) => (
+    <blockquote>
+      {t.quote}
+      <cite>{t.author ?? ""}</cite>
+    </blockquote>
+  ))}
+</section>

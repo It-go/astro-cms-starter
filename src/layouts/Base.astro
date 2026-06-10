@@ -1,0 +1,52 @@
+---
+// Basis-layout: <head> med SEO + hreflang + lang. Styling er bevidst minimal
+// (erstattes/brandes via @itgo/design-system i Wave 2). Indhold escapes af Astro.
+interface Alt {
+  locale: string;
+  href: string;
+}
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+  locale: string;
+  alternates?: Alt[];
+}
+const { title, description, ogImage, locale, alternates = [] } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+---
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    <link rel="canonical" href={canonical} />
+    {alternates.map((a) => <link rel="alternate" hreflang={a.locale} href={new URL(a.href, Astro.site).toString()} />)}
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta name="generator" content={Astro.generator} />
+    <style is:global>
+      * { box-sizing: border-box; }
+      body { margin: 0; font: 16px/1.6 system-ui, sans-serif; color: #1a1a1a; }
+      img { max-width: 100%; height: auto; display: block; }
+      section { padding: 48px 20px; max-width: 1100px; margin: 0 auto; }
+      .st-hero { position: relative; text-align: center; padding: 96px 20px; }
+      .st-hero h1 { font-size: 2.5rem; margin: 0 0 12px; }
+      .st-btn { display: inline-block; margin-top: 16px; padding: 12px 24px; background: #1a1a1a; color: #fff; text-decoration: none; border-radius: 8px; }
+      .st-grid-items { display: grid; gap: 12px; }
+      .st-form { display: flex; flex-direction: column; gap: 8px; max-width: 480px; }
+      .st-form input, .st-form textarea { padding: 10px; border: 1px solid #ccc; border-radius: 6px; font: inherit; }
+      .st-form button { padding: 12px; border: 0; background: #1a1a1a; color: #fff; border-radius: 8px; cursor: pointer; }
+      .st-footer { background: #111; color: #eee; padding: 32px 20px; text-align: center; }
+      .st-footer a { color: #9cf; margin: 0 8px; }
+      blockquote { border-left: 3px solid #ccc; margin: 12px 0; padding: 8px 16px; }
+      cite { display: block; margin-top: 8px; color: #666; }
+    </style>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

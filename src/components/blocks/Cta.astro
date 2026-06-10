@@ -1,0 +1,15 @@
+---
+import { safeUrl } from "./safe";
+interface Props {
+  heading?: string;
+  body?: string;
+  button_label?: string;
+  button_href?: string;
+}
+const { heading, body, button_label, button_href } = Astro.props;
+---
+<section class="st-cta">
+  <h2>{heading}</h2>
+  {body && <p>{body}</p>}
+  {button_label && <a class="st-btn" href={safeUrl(button_href)}>{button_label}</a>}
+</section>

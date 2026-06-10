@@ -1,0 +1,11 @@
+---
+interface Props {
+  heading?: string;
+  body?: string;
+}
+const { heading, body } = Astro.props;
+---
+<section class="st-text">
+  {heading && <h2>{heading}</h2>}
+  <div class="st-richtext" set:html={body ?? ""} />
+</section>

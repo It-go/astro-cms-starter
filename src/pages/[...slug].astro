@@ -1,0 +1,48 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../layouts/Base.astro";
+import Blocks from "../components/blocks/Blocks.astro";
+
+// Filsti = <locale>/<slug>. Routing: da forside→"/", da/<slug>→"/<slug>",
+// en forside→"/en", en/<slug>→"/en/<slug>". hreflang-alternates = samme slug på tværs af locales.
+export async function getStaticPaths() {
+  const HOME = "forside";
+  const toPath = (locale: string, slug: string): string | undefined => {
+    const isHome = slug === HOME;
+    if (locale === "da") return isHome ? undefined : slug;
+    return isHome ? locale : `${locale}/${slug}`;
+  };
+  const pages = await getCollection("pages");
+  // index: logisk slug → { locale → urlpath }
+  const bySlug = new Map<string, { locale: string; href: string }[]>();
+  for (const p of pages) {
+    const [locale, ...rest] = p.id.split("/");
+    const slug = rest.join("/") || HOME;
+    const path = toPath(locale, slug);
+    const href = "/" + (path ?? "");
+    const list = bySlug.get(slug) ?? [];
+    list.push({ locale, href });
+    bySlug.set(slug, list);
+  }
+  return pages.map((p) => {
+    const [locale, ...rest] = p.id.split("/");
+    const slug = rest.join("/") || HOME;
+    return {
+      params: { slug: toPath(locale, slug) },
+      props: { entry: p, locale, alternates: bySlug.get(slug) ?? [] },
+    };
+  });
+}
+
+const { entry, locale, alternates } = Astro.props;
+const { title, seo, blocks } = entry.data;
+---
+<Base
+  title={seo?.title ?? title}
+  description={seo?.description}
+  ogImage={seo?.og_image}
+  locale={locale}
+  alternates={alternates}
+>
+  <Blocks blocks={blocks} />
+</Base>

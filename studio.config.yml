@@ -1,0 +1,127 @@
+# ITGo Studio (Sveltia) — site-config for denne starter.
+# Backend (git-gateway via ITGo Studio) + branding udfyldes pr. kunde ved onboarding (Phase B).
+# Collections matcher content-modellen i src/content.config.ts (blocks-union).
+#
+# Kunden ser dette som "ITGo Studio" på studio.itgo.dk — aldrig Sveltia/GitHub direkte.
+
+# backend: udfyldes pr. kunde (B2 git-gateway).
+# backend: { name: github, repo: It-go/<kunde-repo>, branch: main, base_url: https://gateway.studio.itgo.dk }
+
+media_folder: "public/uploads"
+public_folder: "/uploads"
+
+i18n:
+  structure: multiple_folders
+  locales: [da, en]
+  default_locale: da
+
+collections:
+  - name: pages
+    label: Sider
+    label_singular: Side
+    folder: src/content/pages
+    create: true
+    format: yaml-frontmatter
+    slug: "{{slug}}"
+    i18n: true
+    identifier_field: title
+    fields:
+      - { name: title, label: Titel, widget: string, i18n: true }
+      - name: seo
+        label: SEO
+        widget: object
+        required: false
+        collapsed: true
+        fields:
+          - { name: title, label: SEO-titel, widget: string, required: false, i18n: true }
+          - { name: description, label: Beskrivelse, widget: text, required: false, i18n: true }
+          - { name: og_image, label: OG-billede, widget: image, required: false }
+      - name: blocks
+        label: Sektioner
+        label_singular: Sektion
+        widget: list
+        types:
+          - name: hero
+            label: Hero
+            widget: object
+            fields:
+              - { name: heading, label: Overskrift, widget: string, i18n: true }
+              - { name: subheading, label: Underoverskrift, widget: string, required: false, i18n: true }
+              - { name: image, label: Billede, widget: image, required: false }
+              - { name: cta_label, label: CTA-tekst, widget: string, required: false, i18n: true }
+              - { name: cta_href, label: CTA-link, widget: string, required: false }
+          - name: text
+            label: Tekst
+            widget: object
+            fields:
+              - { name: heading, label: Overskrift, widget: string, required: false, i18n: true }
+              - { name: body, label: Brødtekst, widget: markdown, i18n: true }
+          - name: image_grid
+            label: Billed-grid
+            widget: object
+            fields:
+              - { name: heading, label: Overskrift, widget: string, required: false, i18n: true }
+              - { name: columns, label: Kolonner, widget: number, default: 3, min: 1, max: 6 }
+              - name: images
+                label: Billeder
+                widget: list
+                fields:
+                  - { name: src, label: Billede, widget: image }
+                  - { name: alt, label: Alt-tekst, widget: string, required: false, i18n: true }
+          - name: faq
+            label: FAQ
+            widget: object
+            fields:
+              - { name: heading, label: Overskrift, widget: string, required: false, i18n: true }
+              - name: items
+                label: Spørgsmål
+                widget: list
+                fields:
+                  - { name: q, label: Spørgsmål, widget: string, i18n: true }
+                  - { name: a, label: Svar, widget: text, i18n: true }
+          - name: contact_form
+            label: Kontakt-form
+            widget: object
+            fields:
+              - { name: heading, label: Overskrift, widget: string, required: false, i18n: true }
+              - { name: submit_label, label: Send-knap, widget: string, default: Send, i18n: true }
+              - { name: form_key, label: Form-nøgle, widget: string, default: contact }
+              - name: fields
+                label: Felter
+                widget: list
+                fields:
+                  - { name: name, label: Navn (teknisk), widget: string }
+                  - { name: label, label: Label, widget: string, i18n: true }
+                  - { name: type, label: Type, widget: select, options: [text, email, tel, textarea], default: text }
+                  - { name: required, label: Påkrævet, widget: boolean, default: false }
+          - name: testimonials
+            label: Anbefalinger
+            widget: object
+            fields:
+              - { name: heading, label: Overskrift, widget: string, required: false, i18n: true }
+              - name: items
+                label: Citater
+                widget: list
+                fields:
+                  - { name: quote, label: Citat, widget: text, i18n: true }
+                  - { name: author, label: Forfatter, widget: string, required: false }
+          - name: cta
+            label: Call-to-action
+            widget: object
+            fields:
+              - { name: heading, label: Overskrift, widget: string, i18n: true }
+              - { name: body, label: Tekst, widget: string, required: false, i18n: true }
+              - { name: button_label, label: Knap-tekst, widget: string, required: false, i18n: true }
+              - { name: button_href, label: Knap-link, widget: string, required: false }
+          - name: footer
+            label: Footer
+            widget: object
+            fields:
+              - { name: company, label: Firma, widget: string, i18n: duplicate }
+              - { name: address, label: Adresse, widget: string, required: false, i18n: duplicate }
+              - name: links
+                label: Links
+                widget: list
+                fields:
+                  - { name: label, label: Tekst, widget: string, i18n: true }
+                  - { name: href, label: Link, widget: string }

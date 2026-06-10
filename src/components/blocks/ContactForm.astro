@@ -1,0 +1,33 @@
+---
+// data-st-form hookes af forms→Leads-endpoint (Phase D).
+interface Field {
+  name: string;
+  label?: string;
+  type?: "text" | "email" | "tel" | "textarea";
+  required?: boolean;
+}
+interface Props {
+  heading?: string;
+  submit_label?: string;
+  form_key?: string;
+  fields?: Field[];
+}
+const { heading, submit_label = "Send", form_key = "contact", fields = [] } = Astro.props;
+const allowed = ["email", "tel", "text"];
+---
+<section class="st-contact" id="kontakt">
+  {heading && <h2>{heading}</h2>}
+  <form class="st-form" method="post" data-st-form={form_key}>
+    {fields.map((f) => (
+      <>
+        <label>{f.label ?? f.name}</label>
+        {f.type === "textarea" ? (
+          <textarea name={f.name} required={f.required} />
+        ) : (
+          <input type={allowed.includes(f.type ?? "") ? f.type : "text"} name={f.name} required={f.required} />
+        )}
+      </>
+    ))}
+    <button type="submit">{submit_label}</button>
+  </form>
+</section>

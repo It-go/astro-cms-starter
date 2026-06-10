@@ -1,0 +1,16 @@
+---
+import { safeUrl } from "./safe";
+interface Props {
+  company?: string;
+  address?: string;
+  links?: { label: string; href: string }[];
+}
+const { company, address, links = [] } = Astro.props;
+---
+<footer class="st-footer">
+  <div>{company}</div>
+  {address && <div class="st-addr">{address}</div>}
+  <nav>
+    {links.map((l) => <a href={safeUrl(l.href)}>{l.label}</a>)}
+  </nav>
+</footer>

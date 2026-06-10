@@ -1,0 +1,16 @@
+---
+import { safeUrl } from "./safe";
+interface Props {
+  heading?: string;
+  columns?: number;
+  images?: { src: string; alt?: string }[];
+}
+const { heading, columns = 3, images = [] } = Astro.props;
+const cols = Math.max(1, Math.min(6, columns));
+---
+<section class="st-grid">
+  {heading && <h2>{heading}</h2>}
+  <div class="st-grid-items" style={`grid-template-columns:repeat(${cols},1fr)`}>
+    {images.map((im) => <img src={safeUrl(im.src)} alt={im.alt ?? ""} />)}
+  </div>
+</section>

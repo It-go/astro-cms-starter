@@ -1,0 +1,35 @@
+---
+// Block-dispatcher: render en ordnet liste af typede blocks.
+import type { Block } from "../../content.config";
+import Hero from "./Hero.astro";
+import Text from "./Text.astro";
+import ImageGrid from "./ImageGrid.astro";
+import Faq from "./Faq.astro";
+import ContactForm from "./ContactForm.astro";
+import Testimonials from "./Testimonials.astro";
+import Cta from "./Cta.astro";
+import Footer from "./Footer.astro";
+
+interface Props {
+  blocks: Block[];
+}
+const { blocks } = Astro.props;
+
+const MAP = {
+  hero: Hero,
+  text: Text,
+  image_grid: ImageGrid,
+  faq: Faq,
+  contact_form: ContactForm,
+  testimonials: Testimonials,
+  cta: Cta,
+  footer: Footer,
+} as const;
+---
+{
+  blocks.map((b) => {
+    const C = MAP[b.type];
+    // @ts-expect-error — diskrimineret union: hver komponent matcher sin egen type.
+    return <C {...b} />;
+  })
+}

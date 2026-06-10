@@ -1,0 +1,19 @@
+---
+import { safeUrl } from "./safe";
+interface Props {
+  heading?: string;
+  subheading?: string;
+  image?: string;
+  cta_label?: string;
+  cta_href?: string;
+}
+const { heading, subheading, image, cta_label, cta_href } = Astro.props;
+---
+<section class="st-hero">
+  {image && <img class="st-hero-bg" src={safeUrl(image)} alt="" />}
+  <div class="st-hero-inner">
+    <h1>{heading}</h1>
+    {subheading && <p class="st-sub">{subheading}</p>}
+    {cta_label && <a class="st-btn" href={safeUrl(cta_href)}>{cta_label}</a>}
+  </div>
+</section>
