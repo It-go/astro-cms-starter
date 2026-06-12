@@ -32,51 +32,57 @@ collections:
     i18n: true
     identifier_field: title
     fields:
-      - { name: title, label: Titel, widget: string, i18n: true }
+      - { name: title, label: Titel, widget: string, i18n: true, hint: "Sidens titel — vises i browserfanen og typisk som overskrift." }
       - name: seo
         label: SEO
         widget: object
         required: false
         collapsed: true
+        hint: "Hvordan siden ser ud i Google og når den deles. Lad felterne stå tomme for at bruge sidens egen titel."
         fields:
           - { name: title, label: SEO-titel, widget: string, required: false, i18n: true }
-          - { name: description, label: Beskrivelse, widget: text, required: false, i18n: true }
-          - { name: og_image, label: OG-billede, widget: image, required: false }
+          - { name: description, label: Beskrivelse, widget: text, required: false, i18n: true, hint: "1-2 sætninger der vises under titlen i Google." }
+          - { name: og_image, label: OG-billede, widget: image, required: false, hint: "Billede der vises når siden deles på fx Facebook/LinkedIn." }
       - name: blocks
         label: Sektioner
         label_singular: Sektion
         widget: list
+        hint: "Byg siden af sektioner. Tilføj, fjern og træk for at ændre rækkefølgen."
         types:
           - name: hero
             label: Hero
             widget: object
+            hint: "Det store banner øverst på siden — overskrift, evt. billede og en knap."
             fields:
               - { name: heading, label: Overskrift, widget: string, i18n: true }
               - { name: subheading, label: Underoverskrift, widget: string, required: false, i18n: true }
               - { name: image, label: Billede, widget: image, required: false }
-              - { name: cta_label, label: CTA-tekst, widget: string, required: false, i18n: true }
-              - { name: cta_href, label: CTA-link, widget: string, required: false }
+              - { name: cta_label, label: CTA-tekst, widget: string, required: false, i18n: true, hint: "Teksten på knappen, fx 'Kontakt os'." }
+              - { name: cta_href, label: CTA-link, widget: string, required: false, hint: "Hvor knappen fører hen, fx /kontakt eller https://…" }
           - name: text
             label: Tekst
             widget: object
+            hint: "En tekstsektion med overskrift og brødtekst."
             fields:
               - { name: heading, label: Overskrift, widget: string, required: false, i18n: true }
               - { name: body, label: Brødtekst, widget: markdown, i18n: true }
           - name: image_grid
             label: Billed-grid
             widget: object
+            hint: "Billeder i et gitter — fx galleri, referencer eller logoer."
             fields:
               - { name: heading, label: Overskrift, widget: string, required: false, i18n: true }
-              - { name: columns, label: Kolonner, widget: number, default: 3, min: 1, max: 6 }
+              - { name: columns, label: Kolonner, widget: number, default: 3, min: 1, max: 6, hint: "Antal billeder pr. række (1-6)." }
               - name: images
                 label: Billeder
                 widget: list
                 fields:
                   - { name: src, label: Billede, widget: image }
-                  - { name: alt, label: Alt-tekst, widget: string, required: false, i18n: true }
+                  - { name: alt, label: Alt-tekst, widget: string, required: false, i18n: true, hint: "Kort beskrivelse af billedet (for skærmlæsere og Google)." }
           - name: faq
             label: FAQ
             widget: object
+            hint: "Ofte stillede spørgsmål med svar der kan foldes ud."
             fields:
               - { name: heading, label: Overskrift, widget: string, required: false, i18n: true }
               - name: items
@@ -88,21 +94,24 @@ collections:
           - name: contact_form
             label: Kontakt-form
             widget: object
+            hint: "En kontaktformular. Indsendelser sendes til jer."
             fields:
               - { name: heading, label: Overskrift, widget: string, required: false, i18n: true }
               - { name: submit_label, label: Send-knap, widget: string, default: Send, i18n: true }
-              - { name: form_key, label: Form-nøgle, widget: string, default: contact }
+              - { name: form_key, label: Form-nøgle, widget: string, default: contact, hint: "Teknisk id der samler indsendelserne. Lad stå som det er." }
               - name: fields
                 label: Felter
                 widget: list
+                hint: "Felterne i formularen (fx navn, e-mail, besked)."
                 fields:
-                  - { name: name, label: Navn (teknisk), widget: string }
+                  - { name: name, label: Navn (teknisk), widget: string, hint: "Teknisk feltnavn uden mellemrum/æøå — vises ikke til besøgende." }
                   - { name: label, label: Label, widget: string, i18n: true }
                   - { name: type, label: Type, widget: select, options: [text, email, tel, textarea], default: text }
                   - { name: required, label: Påkrævet, widget: boolean, default: false }
           - name: testimonials
             label: Anbefalinger
             widget: object
+            hint: "Citater og anbefalinger fra kunder."
             fields:
               - { name: heading, label: Overskrift, widget: string, required: false, i18n: true }
               - name: items
@@ -114,14 +123,16 @@ collections:
           - name: cta
             label: Call-to-action
             widget: object
+            hint: "Opfordring til handling — kort tekst og en knap."
             fields:
               - { name: heading, label: Overskrift, widget: string, i18n: true }
               - { name: body, label: Tekst, widget: string, required: false, i18n: true }
               - { name: button_label, label: Knap-tekst, widget: string, required: false, i18n: true }
-              - { name: button_href, label: Knap-link, widget: string, required: false }
+              - { name: button_href, label: Knap-link, widget: string, required: false, hint: "Hvor knappen fører hen, fx /kontakt." }
           - name: footer
             label: Footer
             widget: object
+            hint: "Bunden af siden — firmanavn, adresse og links."
             fields:
               - { name: company, label: Firma, widget: string, i18n: duplicate }
               - { name: address, label: Adresse, widget: string, required: false, i18n: duplicate }
@@ -144,5 +155,5 @@ collections:
     fields:
       - { name: title, label: Titel, widget: string }
       - { name: date, label: Dato, widget: datetime, picker_utc: false, format: "YYYY-MM-DD" }
-      - { name: summary, label: Resumé, widget: text, required: false }
+      - { name: summary, label: Resumé, widget: text, required: false, hint: "Kort tekst der vises i oversigten over nyheder." }
       - { name: body, label: Indhold, widget: markdown }
