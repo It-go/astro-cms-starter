@@ -33,15 +33,15 @@ const SITE_SLUG = import.meta.env.PUBLIC_STUDIO_SLUG || "";
           try { return JSON.parse(decodeURIComponent(escape(atob(t.split(".")[1].replace(/-/g, "+").replace(/_/g, "/"))))); }
           catch (e) { return null; }
         }
-        // 1) Token fra URL-fragment → sessionStorage; ryd fragmentet straks (hardening: ikke localStorage,
+        // 1) Token fra URL-fragment → localStorage; ryd fragmentet straks (hardening:
         //    ingen token i browser-historik/URL).
         if (location.hash && location.hash.indexOf("itgo_token=") !== -1) {
           var m = location.hash.match(/itgo_token=([^&]+)/);
-          if (m) { try { sessionStorage.setItem("itgo_token", decodeURIComponent(m[1])); } catch (e) {} }
+          if (m) { try { localStorage.setItem("itgo_token", decodeURIComponent(m[1])); } catch (e) {} }
           history.replaceState(null, "", location.pathname + location.search);
         }
         var token = null;
-        try { token = sessionStorage.getItem("itgo_token"); } catch (e) {}
+        try { token = localStorage.getItem("itgo_token"); } catch (e) {}
         if (!token) { gotoLogin(); return; }
 
         var claims = decodeJWT(token) || {};
@@ -55,7 +55,7 @@ const SITE_SLUG = import.meta.env.PUBLIC_STUDIO_SLUG || "";
         var configPath = site.configPath || "studio.config.yml";
         fetch(I.GATEWAY + "/api/git/sites/" + slug + "/file?path=" + encodeURIComponent(configPath), { headers: { Authorization: "Bearer " + token } })
           .then(function (r) {
-            if (r.status === 401 || r.status === 403) { try { sessionStorage.removeItem("itgo_token"); } catch (e) {} gotoLogin(); throw new Error("auth"); }
+            if (r.status === 401 || r.status === 403) { try { localStorage.removeItem("itgo_token"); } catch (e) {} gotoLogin(); throw new Error("auth"); }
             if (!r.ok) throw new Error("HTTP " + r.status);
             return r.json();
           })
