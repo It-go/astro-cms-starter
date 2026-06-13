@@ -27,9 +27,9 @@ const MAP = {
 } as const;
 ---
 {
-  blocks.map((b) => {
+  blocks.map((b, i) => {
     const C = MAP[b.type];
-    // @ts-expect-error — diskrimineret union: hver komponent matcher sin egen type.
-    return <C {...b} />;
+    // @ts-expect-error — diskrimineret union: hver komponent matcher sin egen type. _idx → live-preview-felt-stier (data-itgo-field="blocks.<i>.<felt>").
+    return <C {...b} _idx={i} />;
   })
 }

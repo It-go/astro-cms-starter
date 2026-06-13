@@ -5,11 +5,13 @@ interface Props {
   body?: string;
   button_label?: string;
   button_href?: string;
+  _idx?: number;
 }
-const { heading, body, button_label, button_href } = Astro.props;
+const { heading, body, button_label, button_href, _idx } = Astro.props;
+const fp = (f: string) => `blocks.${_idx}.${f}`;
 ---
 <section class="st-cta">
-  <h2>{heading}</h2>
-  {body && <p>{body}</p>}
-  {button_label && <a class="st-btn" href={safeUrl(button_href)}>{button_label}</a>}
+  <h2 data-itgo-field={fp("heading")}>{heading}</h2>
+  {body && <p data-itgo-field={fp("body")}>{body}</p>}
+  {button_label && <a class="st-btn" href={safeUrl(button_href)} data-itgo-field={fp("button_label")}>{button_label}</a>}
 </section>
