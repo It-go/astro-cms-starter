@@ -2,10 +2,12 @@
 interface Props {
   heading?: string;
   body?: string;
+  _idx?: number;
 }
-const { heading, body } = Astro.props;
+const { heading, body, _idx } = Astro.props;
+const fp = (f: string) => `blocks.${_idx}.${f}`;
 ---
 <section class="st-text">
-  {heading && <h2>{heading}</h2>}
-  <div class="st-richtext" set:html={body ?? ""} />
+  {heading && <h2 data-itgo-field={fp("heading")}>{heading}</h2>}
+  <div class="st-richtext" data-itgo-field={fp("body")} data-itgo-html set:html={body ?? ""} />
 </section>

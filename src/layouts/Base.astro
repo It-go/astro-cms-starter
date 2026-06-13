@@ -49,5 +49,32 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
   </head>
   <body class="antialiased">
     <slot />
+    {/* ITGo live-preview-bro (ITG-929) — kun aktiv med ?itgo_preview=1. Patcher [data-itgo-field] fra editorens kladde. Fail-safe: ukendte felter ignoreres. */}
+    <script is:inline>
+      (function () {
+        if (new URLSearchParams(location.search).get("itgo_preview") !== "1") return;
+        document.documentElement.setAttribute("data-itgo-preview", "1");
+        function setVal(el, v) {
+          var s = v == null ? "" : String(v);
+          if (el.tagName === "IMG") el.setAttribute("src", s);
+          else if (el.hasAttribute("data-itgo-html")) el.innerHTML = s;
+          else el.textContent = s;
+        }
+        function patch(fields) {
+          if (!fields || typeof fields !== "object") return;
+          Object.keys(fields).forEach(function (path) {
+            if (/["\\]/.test(path)) return;
+            var nodes = document.querySelectorAll('[data-itgo-field="' + path + '"]');
+            for (var i = 0; i < nodes.length; i++) setVal(nodes[i], fields[path]);
+          });
+        }
+        window.addEventListener("message", function (e) {
+          var d = e.data;
+          if (!d || d.type !== "itgo:draft") return;
+          try { patch(d.fields); } catch (err) {}
+        });
+        try { if (window.parent && window.parent !== window) window.parent.postMessage({ type: "itgo:preview-ready" }, "*"); } catch (e) {}
+      })();
+    </script>
   </body>
 </html>

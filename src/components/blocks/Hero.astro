@@ -6,14 +6,17 @@ interface Props {
   image?: string;
   cta_label?: string;
   cta_href?: string;
+  _idx?: number;
 }
-const { heading, subheading, image, cta_label, cta_href } = Astro.props;
+const { heading, subheading, image, cta_label, cta_href, _idx } = Astro.props;
+// Live-preview-binding (ITG-929): data-itgo-field matcher Sveltia keyPath "blocks.<idx>.<felt>".
+const fp = (f: string) => `blocks.${_idx}.${f}`;
 ---
 <section class="st-hero">
-  {image && <img class="st-hero-bg" src={safeUrl(image)} alt="" />}
+  {image && <img class="st-hero-bg" src={safeUrl(image)} alt="" data-itgo-field={fp("image")} />}
   <div class="st-hero-inner">
-    <h1>{heading}</h1>
-    {subheading && <p class="st-sub">{subheading}</p>}
-    {cta_label && <a class="st-btn" href={safeUrl(cta_href)}>{cta_label}</a>}
+    <h1 data-itgo-field={fp("heading")}>{heading}</h1>
+    {subheading && <p class="st-sub" data-itgo-field={fp("subheading")}>{subheading}</p>}
+    {cta_label && <a class="st-btn" href={safeUrl(cta_href)} data-itgo-field={fp("cta_label")}>{cta_label}</a>}
   </div>
 </section>
