@@ -4,13 +4,16 @@ interface Props {
   company?: string;
   address?: string;
   links?: { label: string; href: string }[];
+  _idx?: number;
 }
-const { company, address, links = [] } = Astro.props;
+const { company, address, links = [], _idx } = Astro.props;
+// Live-preview-binding (ITG-933): data-itgo-field matcher Sveltia keyPath "blocks.<idx>.<felt>".
+const fp = (f: string) => `blocks.${_idx}.${f}`;
 ---
 <footer class="st-footer">
-  <div>{company}</div>
-  {address && <div class="st-addr">{address}</div>}
+  <div data-itgo-field={fp("company")}>{company}</div>
+  {address && <div class="st-addr" data-itgo-field={fp("address")}>{address}</div>}
   <nav>
-    {links.map((l) => <a href={safeUrl(l.href)}>{l.label}</a>)}
+    {links.map((l, j) => <a href={safeUrl(l.href)} data-itgo-field={fp(`links.${j}.label`)}>{l.label}</a>)}
   </nav>
 </footer>

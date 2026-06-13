@@ -2,15 +2,18 @@
 interface Props {
   heading?: string;
   items?: { quote: string; author?: string }[];
+  _idx?: number;
 }
-const { heading, items = [] } = Astro.props;
+const { heading, items = [], _idx } = Astro.props;
+// Live-preview-binding (ITG-933): data-itgo-field matcher Sveltia keyPath "blocks.<idx>.<felt>".
+const fp = (f: string) => `blocks.${_idx}.${f}`;
 ---
 <section class="st-testimonials">
-  {heading && <h2>{heading}</h2>}
-  {items.map((t) => (
+  {heading && <h2 data-itgo-field={fp("heading")}>{heading}</h2>}
+  {items.map((t, j) => (
     <blockquote>
-      {t.quote}
-      <cite>{t.author ?? ""}</cite>
+      <span data-itgo-field={fp(`items.${j}.quote`)}>{t.quote}</span>
+      <cite data-itgo-field={fp(`items.${j}.author`)}>{t.author ?? ""}</cite>
     </blockquote>
   ))}
 </section>

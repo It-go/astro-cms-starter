@@ -11,16 +11,19 @@ interface Props {
   submit_label?: string;
   form_key?: string;
   fields?: Field[];
+  _idx?: number;
 }
-const { heading, submit_label = "Send", form_key = "contact", fields = [] } = Astro.props;
+const { heading, submit_label = "Send", form_key = "contact", fields = [], _idx } = Astro.props;
 const allowed = ["email", "tel", "text"];
+// Live-preview-binding (ITG-933): data-itgo-field matcher Sveltia keyPath "blocks.<idx>.<felt>".
+const fp = (f: string) => `blocks.${_idx}.${f}`;
 ---
 <section class="st-contact" id="kontakt">
-  {heading && <h2>{heading}</h2>}
+  {heading && <h2 data-itgo-field={fp("heading")}>{heading}</h2>}
   <form class="st-form" method="post" data-st-form={form_key}>
-    {fields.map((f) => (
+    {fields.map((f, j) => (
       <>
-        <label>{f.label ?? f.name}</label>
+        <label data-itgo-field={fp(`fields.${j}.label`)}>{f.label ?? f.name}</label>
         {f.type === "textarea" ? (
           <textarea name={f.name} required={f.required} />
         ) : (
@@ -28,6 +31,6 @@ const allowed = ["email", "tel", "text"];
         )}
       </>
     ))}
-    <button type="submit">{submit_label}</button>
+    <button type="submit" data-itgo-field={fp("submit_label")}>{submit_label}</button>
   </form>
 </section>

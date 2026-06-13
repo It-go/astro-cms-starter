@@ -4,13 +4,16 @@ interface Props {
   heading?: string;
   columns?: number;
   images?: { src: string; alt?: string }[];
+  _idx?: number;
 }
-const { heading, columns = 3, images = [] } = Astro.props;
+const { heading, columns = 3, images = [], _idx } = Astro.props;
 const cols = Math.max(1, Math.min(6, columns));
+// Live-preview-binding (ITG-933): data-itgo-field matcher Sveltia keyPath "blocks.<idx>.<felt>".
+const fp = (f: string) => `blocks.${_idx}.${f}`;
 ---
 <section class="st-grid">
-  {heading && <h2>{heading}</h2>}
+  {heading && <h2 data-itgo-field={fp("heading")}>{heading}</h2>}
   <div class="st-grid-items" style={`grid-template-columns:repeat(${cols},1fr)`}>
-    {images.map((im) => <img src={safeUrl(im.src)} alt={im.alt ?? ""} />)}
+    {images.map((im, j) => <img src={safeUrl(im.src)} alt={im.alt ?? ""} data-itgo-field={fp(`images.${j}.src`)} />)}
   </div>
 </section>
