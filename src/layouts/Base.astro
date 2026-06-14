@@ -49,7 +49,14 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
   </head>
   <body class="antialiased">
     <slot />
-    {/* ITGo live-preview-bro (ITG-929) — kun aktiv med ?itgo_preview=1. Patcher [data-itgo-field] fra editorens kladde. Fail-safe: ukendte felter ignoreres. */}
+    {/* ITGo live-preview-bro (ITG-929 + in-context edit ITG-960) — kun aktiv med ?itgo_preview=1.
+        Tovejs: editor→preview (itgo:draft patcher [data-itgo-field]) OG preview→editor (klik-til-redigér
+        i edit-mode poster itgo:edit). Fail-safe: ukendte felter/fejl ignoreres. */}
+    <style is:inline>
+      html[data-itgo-edit="1"] [data-itgo-field]:not(img):not([data-itgo-html]):hover { outline: 2px dashed #6b8afd; outline-offset: 2px; cursor: text; }
+      html[data-itgo-edit="1"] [data-itgo-field][contenteditable="true"]:focus { outline: 2px solid #2f5bff; outline-offset: 2px; border-radius: 2px; }
+      html[data-itgo-edit="1"] [data-itgo-openform]:hover { outline: 2px dashed #6b8afd; outline-offset: 2px; cursor: pointer; }
+    </style>
     <script is:inline>
       (function () {
         if (new URLSearchParams(location.search).get("itgo_preview") !== "1") return;
@@ -68,12 +75,45 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
             for (var i = 0; i < nodes.length; i++) setVal(nodes[i], fields[path]);
           });
         }
+        function post(type, payload) {
+          try { if (window.parent && window.parent !== window) window.parent.postMessage(Object.assign({ type: type }, payload || {}), "*"); } catch (e) {}
+        }
+        // ── In-context edit-mode (ITG-960): preview → editor ──────────────────
+        // Plain-tekst-felter bliver klik-til-redigér; billeder + richtext (data-itgo-html)
+        // åbnes i stedet i formularen (MVP — undgår at smadre rich text/binær).
+        var EDIT = false;
+        function inlineEditable(el) { return el.tagName !== "IMG" && !el.hasAttribute("data-itgo-html"); }
+        function setEditMode(on) {
+          EDIT = !!on;
+          document.documentElement.setAttribute("data-itgo-edit", EDIT ? "1" : "0");
+          var els = document.querySelectorAll("[data-itgo-field]");
+          for (var i = 0; i < els.length; i++) {
+            var el = els[i];
+            if (EDIT && inlineEditable(el)) { el.setAttribute("contenteditable", "true"); el.removeAttribute("data-itgo-openform"); }
+            else if (EDIT) { el.setAttribute("data-itgo-openform", "1"); }
+            else { el.removeAttribute("contenteditable"); el.removeAttribute("data-itgo-openform"); }
+          }
+        }
+        document.addEventListener("input", function (e) {
+          if (!EDIT) return;
+          var el = e.target && e.target.closest ? e.target.closest('[data-itgo-field][contenteditable="true"]') : null;
+          if (!el) return;
+          post("itgo:edit", { path: el.getAttribute("data-itgo-field"), value: el.textContent });
+        }, true);
+        document.addEventListener("click", function (e) {
+          if (!EDIT) return;
+          var el = e.target && e.target.closest ? e.target.closest("[data-itgo-openform]") : null;
+          if (!el) return;
+          e.preventDefault();
+          post("itgo:focus-field", { path: el.getAttribute("data-itgo-field") });
+        }, true);
         window.addEventListener("message", function (e) {
           var d = e.data;
-          if (!d || d.type !== "itgo:draft") return;
-          try { patch(d.fields); } catch (err) {}
+          if (!d) return;
+          if (d.type === "itgo:draft") { try { patch(d.fields); } catch (err) {} return; }
+          if (d.type === "itgo:edit-mode") { try { setEditMode(d.on); } catch (err) {} return; }
         });
-        try { if (window.parent && window.parent !== window) window.parent.postMessage({ type: "itgo:preview-ready" }, "*"); } catch (e) {}
+        post("itgo:preview-ready", {});
       })();
     </script>
   </body>
