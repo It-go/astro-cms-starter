@@ -13,6 +13,7 @@ const DEFAULTS: SiteSettings = {
   geo: {},
   menu: [],
   tracking: {},
+  consent: { enabled: false },
 };
 
 /** Globale site-indstillinger (firma/kontakt). Altid defineret; merget med DEFAULTS. */

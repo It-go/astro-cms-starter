@@ -91,6 +91,19 @@ collections:
               - { name: ga4_id, label: Google Analytics 4 (G-…), widget: string, required: false, hint: "Statistik — kører efter samtykke." }
               - { name: gtm_id, label: Google Tag Manager (GTM-…), widget: string, required: false, hint: "Marketing — kører efter samtykke." }
               - { name: meta_pixel_id, label: Meta Pixel (id), widget: string, required: false, hint: "Marketing — kører efter samtykke." }
+          # Cookie-consent (STD-5) — slå banner til; det gater STD-4's scripts.
+          - name: consent
+            label: Cookie-samtykke
+            widget: object
+            required: false
+            collapsed: true
+            hint: "GDPR cookie-banner. Slå til når du bruger tracking (STD-4)."
+            fields:
+              - { name: enabled, label: Vis cookie-banner, widget: boolean, default: false, hint: "Til = banner vises og gater scripts indtil samtykke." }
+              - { name: message, label: Banner-tekst (dansk), widget: text, required: false, hint: "Valgfri — ellers bruges en standardtekst." }
+              - { name: message_en, label: Banner-tekst (engelsk), widget: text, required: false }
+              - { name: policy_url, label: Link til privatlivspolitik, widget: string, required: false, hint: "Fx /privatlivspolitik (kommer i STD-6)." }
+              - { name: log_url, label: Consent-log endpoint (avanceret), widget: string, required: false, hint: "Valgfri URL der modtager samtykke-log (sendBeacon). Tom = kun lokal log." }
 
   - name: pages
     label: Sider
