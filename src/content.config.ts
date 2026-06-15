@@ -132,6 +132,16 @@ export const siteSettingsSchema = z.object({
     .object({ latitude: z.string().optional(), longitude: z.string().optional() })
     .default({}),
   price_range: z.string().optional(),
+  // Navigation (STD-3): flad menu, drag-sorteret i Studio. label_en valgfri (fallback = label).
+  menu: z
+    .array(
+      z.object({
+        label: z.string().default(""),
+        label_en: z.string().optional(),
+        link: z.string().default(""),
+      }),
+    )
+    .default([]),
 });
 
 const settings = defineCollection({

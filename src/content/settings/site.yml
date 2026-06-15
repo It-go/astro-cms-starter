@@ -20,3 +20,7 @@ geo:
   latitude: "57.0488"
   longitude: "9.9217"
 price_range: "$$"
+menu:
+  - { label: Forside, label_en: Home, link: "" }
+  - { label: Om os, label_en: About, link: om-os }
+  - { label: Nyheder, label_en: News, link: nyheder }

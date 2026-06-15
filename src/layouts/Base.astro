@@ -4,6 +4,7 @@
 import "../styles/global.css";
 import { getSiteSettings } from "../lib/settings";
 import { localBusinessJsonLd, breadcrumbJsonLd } from "../lib/schema-org";
+import SiteHeader from "../components/SiteHeader.astro";
 interface Alt {
   locale: string;
   href: string;
@@ -73,6 +74,7 @@ const ldJson = (o: Record<string, unknown>) => JSON.stringify(o).replace(/</g, "
     </style>
   </head>
   <body class="antialiased">
+    <SiteHeader menu={site.menu} locale={locale} pathname={Astro.url.pathname} siteName={site.company} />
     <slot />
     <footer class="st-sitefooter">
       <div class="st-sitefooter-inner">
