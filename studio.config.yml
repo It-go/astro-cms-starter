@@ -80,6 +80,17 @@ collections:
               - { name: label, label: Tekst (dansk), widget: string }
               - { name: label_en, label: Tekst (engelsk), widget: string, required: false, hint: "Valgfri — bruges på engelske sider. Tom = samme som dansk." }
               - { name: link, label: Link, widget: string, required: false, hint: "Intern: 'om-os' eller tom = forside. Ekstern: https://…" }
+          # Scripts & tags (STD-4) — indsæt id; scriptet loader først EFTER cookie-samtykke (STD-5).
+          - name: tracking
+            label: Scripts & tags
+            widget: object
+            required: false
+            collapsed: true
+            hint: "Tracking-id'er. Tomt felt = slået fra. Marketing/statistik kører først efter samtykke."
+            fields:
+              - { name: ga4_id, label: Google Analytics 4 (G-…), widget: string, required: false, hint: "Statistik — kører efter samtykke." }
+              - { name: gtm_id, label: Google Tag Manager (GTM-…), widget: string, required: false, hint: "Marketing — kører efter samtykke." }
+              - { name: meta_pixel_id, label: Meta Pixel (id), widget: string, required: false, hint: "Marketing — kører efter samtykke." }
 
   - name: pages
     label: Sider

@@ -1,0 +1,82 @@
+---
+// Consent-gated tracking-loader (STD-4 / ITG-969).
+// Injicerer KUN det enkelte tracking-script når brugeren har givet samtykke til dets
+// kategori (localStorage["itgo:consent"] = {statistics, marketing}). Uden samtykke (intet
+// banner endnu — STD-5) loader intet → GDPR-safe default. Re-evaluerer ved `itgo:consent-changed`.
+import { resolveTracking } from "../lib/tracking";
+import type { SiteSettings } from "../content.config";
+
+interface Props {
+  tracking: SiteSettings["tracking"];
+}
+const { tracking } = Astro.props;
+const { scripts, warnings } = resolveTracking(tracking);
+if (warnings.length) {
+  console.warn(`[tracking] STD-4: ${warnings.join("; ")} — ret i site-settings (tracking).`);
+}
+const config = JSON.stringify(scripts).replace(/</g, "\\u003c");
+---
+
+{
+  scripts.length > 0 && (
+    <>
+      <script type="application/json" id="itgo-tracking-config" set:html={config} />
+      <script is:inline>
+        {`(function () {
+  var el = document.getElementById("itgo-tracking-config");
+  if (!el) return;
+  var scripts;
+  try { scripts = JSON.parse(el.textContent || "[]"); } catch (e) { return; }
+  var loaded = {};
+  function consent() {
+    try { return JSON.parse(localStorage.getItem("itgo:consent") || "{}"); } catch (e) { return {}; }
+  }
+  function loadGA4(id) {
+    var s = document.createElement("script");
+    s.async = true;
+    s.src = "https://www.googletagmanager.com/gtag/js?id=" + encodeURIComponent(id);
+    document.head.appendChild(s);
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { window.dataLayer.push(arguments); }
+    gtag("js", new Date());
+    gtag("config", id);
+  }
+  function loadGTM(id) {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ "gtm.start": Date.now(), event: "gtm.js" });
+    var s = document.createElement("script");
+    s.async = true;
+    s.src = "https://www.googletagmanager.com/gtm.js?id=" + encodeURIComponent(id);
+    document.head.appendChild(s);
+  }
+  function loadPixel(id) {
+    if (window.fbq) return;
+    var n = (window.fbq = function () {
+      n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+    });
+    if (!window._fbq) window._fbq = n;
+    n.push = n; n.loaded = true; n.version = "2.0"; n.queue = [];
+    var t = document.createElement("script");
+    t.async = true;
+    t.src = "https://connect.facebook.net/en_US/fbevents.js";
+    document.head.appendChild(t);
+    window.fbq("init", id);
+    window.fbq("track", "PageView");
+  }
+  var LOADERS = { ga4: loadGA4, gtm: loadGTM, pixel: loadPixel };
+  function apply() {
+    var c = consent();
+    scripts.forEach(function (sc) {
+      if (loaded[sc.kind]) return;
+      if (c[sc.category] && LOADERS[sc.kind]) {
+        try { LOADERS[sc.kind](sc.id); loaded[sc.kind] = true; } catch (e) {}
+      }
+    });
+  }
+  apply();
+  window.addEventListener("itgo:consent-changed", apply);
+})();`}
+      </script>
+    </>
+  )
+}
