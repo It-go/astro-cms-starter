@@ -126,6 +126,12 @@ export const siteSettingsSchema = z.object({
     })
     .default({}),
   logo: z.string().optional(),
+  // SEO / schema.org (STD-8): branche-type + geo + prisniveau → LocalBusiness JSON-LD.
+  business_type: z.string().optional(),
+  geo: z
+    .object({ latitude: z.string().optional(), longitude: z.string().optional() })
+    .default({}),
+  price_range: z.string().optional(),
 });
 
 const settings = defineCollection({

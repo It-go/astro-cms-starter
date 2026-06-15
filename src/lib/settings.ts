@@ -10,6 +10,7 @@ const DEFAULTS: SiteSettings = {
   company: "",
   opening_hours: [],
   social: {},
+  geo: {},
 };
 
 /** Globale site-indstillinger (firma/kontakt). Altid defineret; merget med DEFAULTS. */

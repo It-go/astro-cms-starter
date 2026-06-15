@@ -40,6 +40,15 @@ Site-settings er **globale** — firmanavn, CVR, telefon og e-mail er ens på al
 og oversættes ikke. Derfor har collection'en ingen locale-mapper; den samme `site.yml`
 bruges for både `da` og `en`. Sideindhold (collection `pages`) er fortsat i18n pr. locale.
 
+## SEO / schema.org (STD-8)
+
+Felterne `business_type`, `geo` og `price_range` + firma/adresse/tlf/åbningstider bruges til at
+auto-generere **LocalBusiness** JSON-LD i `<head>` på alle sider (`src/lib/schema-org.ts`,
+injiceret af `Base.astro`). Undersider får desuden **BreadcrumbList**. Kun gyldige værdier
+emittes — uparsbare åbningstider og tomme felter udelades, så structured data altid validerer
+(Google Rich Results). `business_type` vælger schema.org-typen (fx `HomeAndConstructionBusiness`
+for håndværkere); ukendt værdi falder tilbage til `LocalBusiness`.
+
 ## Teknisk note (single-object via `file()`)
 
 Sveltia skriver felterne fladt i roden af `site.yml`. Astros `file()`-loader forventer
