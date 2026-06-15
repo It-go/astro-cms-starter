@@ -1,0 +1,39 @@
+---
+// GROWTH-10 (ITG-987): anmeldelses-block — viser rigtige kundeanmeldelser med stjerner.
+// Bevidst INGEN Review/AggregateRating JSON-LD (selv-serverende review-markup frarådes;
+// jf. playbook "ingen fake review-schema"). Google-API-hentning kommer i pass 2 / GROWTH-11.
+interface Props {
+  heading?: string;
+  show_rating?: boolean;
+  items?: { author: string; rating?: number; text?: string; source?: string }[];
+  _idx?: number;
+}
+const { heading, show_rating = true, items = [], _idx } = Astro.props;
+const fp = (f: string) => `blocks.${_idx}.${f}`;
+const clamp = (n?: number) => Math.max(1, Math.min(5, Math.round(n ?? 5)));
+const stars = (n?: number) => "★".repeat(clamp(n)) + "☆".repeat(5 - clamp(n));
+---
+<section class="st-reviews">
+  {heading && <h2 data-itgo-field={fp("heading")}>{heading}</h2>}
+  <div class="st-reviews-grid">
+    {items.map((r, j) => (
+      <figure class="st-review">
+        {show_rating && (
+          <div class="st-review-stars" aria-label={`${clamp(r.rating)} af 5 stjerner`}>{stars(r.rating)}</div>
+        )}
+        {r.text && <blockquote data-itgo-field={fp(`items.${j}.text`)}>{r.text}</blockquote>}
+        <figcaption>
+          <span data-itgo-field={fp(`items.${j}.author`)}>{r.author}</span>
+          {r.source && <span class="st-review-src"> · {r.source}</span>}
+        </figcaption>
+      </figure>
+    ))}
+  </div>
+</section>
+
+<style>
+  .st-reviews-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  .st-review { margin: 0; }
+  .st-review-stars { color: #f5b14e; letter-spacing: 2px; }
+  .st-review-src { color: #666; }
+</style>

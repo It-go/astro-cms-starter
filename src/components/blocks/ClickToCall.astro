@@ -1,0 +1,58 @@
+---
+// GROWTH-10 (ITG-987): klik-til-ring — stor tel:-knap + valgfri fast bund-bar på mobil.
+// Sporer klik til window.dataLayer (consent-gated tracking læser selv eventet).
+interface Props {
+  heading?: string;
+  note?: string;
+  phone?: string;
+  label?: string;
+  sticky_mobile?: boolean;
+  _idx?: number;
+}
+const { heading, note, phone, label = "Ring nu", sticky_mobile = true, _idx } = Astro.props;
+const fp = (f: string) => `blocks.${_idx}.${f}`;
+const tel = (phone || "").replace(/[^+\d]/g, "");
+const href = tel ? `tel:${tel}` : undefined;
+---
+<section class="st-clicktocall">
+  {heading && <h2 data-itgo-field={fp("heading")}>{heading}</h2>}
+  {note && <p class="st-ctc-note" data-itgo-field={fp("note")}>{note}</p>}
+  {href && (
+    <a class="st-btn st-ctc-btn" href={href} data-itgo-track="click_to_call" data-itgo-field={fp("label")}>
+      <span aria-hidden="true">📞</span> {label}
+    </a>
+  )}
+  {!href && <p class="st-ctc-note">Tilføj et telefonnummer for at vise ring-op-knappen.</p>}
+  {href && sticky_mobile && (
+    <a class="st-ctc-sticky" href={href} data-itgo-track="click_to_call_sticky" aria-label={phone ? `${label} ${phone}` : label}>
+      <span aria-hidden="true">📞</span> {label}
+    </a>
+  )}
+</section>
+
+{href && (
+  <script is:inline>
+    if (!window.__itgoCtcWired) {
+      window.__itgoCtcWired = true;
+      document.addEventListener("click", function (e) {
+        var a = e.target && e.target.closest && e.target.closest("[data-itgo-track^='click_to_call']");
+        if (!a) return;
+        (window.dataLayer = window.dataLayer || []).push({ event: "click_to_call", source: a.getAttribute("data-itgo-track") });
+      });
+    }
+  </script>
+)}
+
+<style>
+  .st-clicktocall { text-align: center; }
+  .st-ctc-sticky {
+    display: none;
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
+    padding: 14px; text-align: center; font-weight: 700;
+    background: var(--color-brand, #1a1a1a); color: #fff; text-decoration: none;
+  }
+  @media (max-width: 640px) {
+    .st-ctc-sticky { display: block; }
+    :global(body) { padding-bottom: 64px; }
+  }
+</style>
