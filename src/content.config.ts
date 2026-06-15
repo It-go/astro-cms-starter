@@ -142,6 +142,14 @@ export const siteSettingsSchema = z.object({
       }),
     )
     .default([]),
+  // Scripts & tags (STD-4): consent-gated tracking-id'er. Presence = on/off.
+  tracking: z
+    .object({
+      ga4_id: z.string().optional(),
+      gtm_id: z.string().optional(),
+      meta_pixel_id: z.string().optional(),
+    })
+    .default({}),
 });
 
 const settings = defineCollection({

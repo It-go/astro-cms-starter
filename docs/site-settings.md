@@ -49,6 +49,16 @@ automatisk den locale-korrekte sti (da `/om-os`, en `/en/om-os`). Renderes af
 `src/components/SiteHeader.astro` (resolver: `src/lib/nav.ts`) med JS-fri mobil-burger.
 Døde interne links giver en build-advarsel (console.warn), ikke en fejl.
 
+## Scripts & tags (STD-4)
+
+Feltet `tracking` (GA4 / GTM / Meta Pixel-id) lader kunden tilføje analytics/marketing uden
+kode. **Presence = on/off**: udfyldt felt = aktivt, tomt = intet script. Scripts injiceres
+**consent-gated** af `src/components/TrackingScripts.astro` — hvert script loader først når dets
+kategori har samtykke (`localStorage["itgo:consent"]` = `{statistics, marketing}`; GA4 = statistik,
+GTM/Pixel = marketing). Uden samtykke loader intet (GDPR-safe default); cookie-banneret der sætter
+samtykket kommer i **STD-5** og dispatcher `itgo:consent-changed`. Oplagt forkert id-format giver
+en build-advarsel.
+
 ## SEO / schema.org (STD-8)
 
 Felterne `business_type`, `geo` og `price_range` + firma/adresse/tlf/åbningstider bruges til at

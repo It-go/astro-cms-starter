@@ -12,6 +12,7 @@ const DEFAULTS: SiteSettings = {
   social: {},
   geo: {},
   menu: [],
+  tracking: {},
 };
 
 /** Globale site-indstillinger (firma/kontakt). Altid defineret; merget med DEFAULTS. */
