@@ -23,6 +23,8 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
 // Globale site-indstillinger (STD-1) — altid defineret, felter kan være tomme.
 const site = await getSiteSettings();
 const hasSocial = !!(site.social.facebook || site.social.instagram || site.social.linkedin);
+// Privatlivspolitik (STD-6): kundens egen (consent.policy_url) ellers den genererede rute.
+const policyHref = site.consent.policy_url?.trim() || (locale === "en" ? "/en/privacy-policy" : "/privatlivspolitik");
 // schema.org structured data (STD-8) — LocalBusiness på alle sider, BreadcrumbList på undersider.
 const base = Astro.site ?? new URL(canonical);
 const businessLd = localBusinessJsonLd(site, { siteUrl: base.toString() });
@@ -76,6 +78,7 @@ const ldJson = (o: Record<string, unknown>) => JSON.stringify(o).replace(/</g, "
       .st-sitefooter-hours { list-style: none; padding: 0; margin: 2px 0 0; display: flex; flex-wrap: wrap; gap: 2px 16px; justify-content: center; color: #9a9a9a; }
       .st-sitefooter-cookie { margin: 4px 0 0; }
       .st-sitefooter-cookiebtn { font: inherit; background: none; border: 0; color: #9cf; text-decoration: underline; cursor: pointer; padding: 0; }
+      .st-sitefooter-legal { margin: 2px 0 0; }
     </style>
   </head>
   <body class="antialiased">
@@ -114,9 +117,12 @@ const ldJson = (o: Record<string, unknown>) => JSON.stringify(o).replace(/</g, "
             </button>
           </p>
         )}
+        <p class="st-sitefooter-legal">
+          <a href={policyHref}>{locale === "en" ? "Privacy policy" : "Privatlivspolitik"}</a>
+        </p>
       </div>
     </footer>
-    {site.consent.enabled && <ConsentBanner consent={site.consent} locale={locale} />}
+    {site.consent.enabled && <ConsentBanner consent={site.consent} locale={locale} policyHref={policyHref} />}
     {/* ITGo live-preview-bro (ITG-929 + in-context edit ITG-960) — kun aktiv med ?itgo_preview=1.
         Tovejs: editor→preview (itgo:draft patcher [data-itgo-field]) OG preview→editor (klik-til-redigér
         i edit-mode poster itgo:edit). Fail-safe: ukendte felter/fejl ignoreres. */}

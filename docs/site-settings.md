@@ -70,6 +70,18 @@ Valget kan ændres igen via "Cookie-indstillinger" i footeren. Samtykke logges l
 (`itgo:consent-log`) + sendes valgfrit til `consent.log_url` (sendBeacon). Tekst (`message`/
 `message_en`) og `policy_url` kan overstyres i settings; ellers bruges indbyggede da/en-tekster.
 
+## Privatlivspolitik (STD-6)
+
+En da/en privatlivs-/cookiepolitik genereres automatisk ud fra site-settings
+(`src/lib/privacy.ts` + `PrivacyPolicy.astro`) på `/privatlivspolitik` og `/en/privacy-policy`.
+Den udfyldes med firmainfo (STD-1) og et cookie-afsnit afledt af de aktive tracking-værktøjer
+(STD-4) + samtykke-kategorier (STD-5), så den altid matcher hvad sitet faktisk gør. Footer og
+cookie-banneret linker automatisk til den (eller til `consent.policy_url` hvis sat).
+
+Vil kunden redigere den selv, opretter de bare en side med slug `privatlivspolitik` (da) /
+`privacy-policy` (en) i Studio — så **vinder deres redigerbare side** over den genererede
+(ingen dublet-rute). Politikken er en **skabelon, ikke juridisk rådgivning** (disclaimer i bunden).
+
 ## SEO / schema.org (STD-8)
 
 Felterne `business_type`, `geo` og `price_range` + firma/adresse/tlf/åbningstider bruges til at
