@@ -104,6 +104,17 @@ collections:
               - { name: message_en, label: Banner-tekst (engelsk), widget: text, required: false }
               - { name: policy_url, label: Link til privatlivspolitik, widget: string, required: false, hint: "Fx /privatlivspolitik (kommer i STD-6)." }
               - { name: log_url, label: Consent-log endpoint (avanceret), widget: string, required: false, hint: "Valgfri URL der modtager samtykke-log (sendBeacon). Tom = kun lokal log." }
+          # 301/302-redirects (STD-7) → Cloudflare Pages _redirects ved build.
+          - name: redirects
+            label: Viderestillinger (redirects)
+            label_singular: Viderestilling
+            widget: list
+            required: false
+            hint: "Send en gammel sti til en ny. Brug ved ændrede URL'er, så links + Google ikke rammer en 404."
+            fields:
+              - { name: from, label: Fra-sti, widget: string, hint: "Gammel sti, fx /gammel-side" }
+              - { name: to, label: Til-sti/URL, widget: string, hint: "Ny sti, fx /ny-side, eller fuld URL" }
+              - { name: permanent, label: "Permanent (301)", widget: boolean, default: true, hint: "Til = 301 (permanent). Fra = 302 (midlertidig)." }
 
   - name: pages
     label: Sider

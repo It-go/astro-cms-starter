@@ -1,0 +1,58 @@
+---
+// Redigerbar 404 (STD-7 / ITG-972). Hvis kunden har en content-side med slug "404", renderes
+// dens blokke (editable). Ellers en pæn default med navigation-forslag fra menuen (STD-3).
+// Cloudflare Pages serverer dist/404.html ved ukendt URL.
+import { getCollection } from "astro:content";
+import Base from "../layouts/Base.astro";
+import Blocks from "../components/blocks/Blocks.astro";
+import { getSiteSettings } from "../lib/settings";
+import { resolveNav } from "../lib/nav";
+
+const pages = await getCollection("pages");
+const custom = pages.find((p) => p.id === "da/404") ?? pages.find((p) => p.id.endsWith("/404"));
+
+const site = await getSiteSettings();
+const knownSlugs = new Set<string>();
+for (const p of pages) {
+  const [, ...rest] = p.id.split("/");
+  const slug = rest.join("/");
+  if (slug && slug !== "forside") knownSlugs.add(slug);
+}
+const { items } = resolveNav(site.menu, { locale: "da", pathname: "/404", knownSlugs });
+---
+
+<Base title="Siden blev ikke fundet" locale="da">
+  {
+    custom ? (
+      <Blocks blocks={custom.data.blocks} />
+    ) : (
+      <section class="st-404">
+        <h1>Siden blev ikke fundet</h1>
+        <p>Vi kunne ikke finde den side, du ledte efter. Den er måske flyttet eller fjernet.</p>
+        <p>
+          <a class="st-404-home" href="/">Gå til forsiden</a>
+        </p>
+        {items.length > 0 && (
+          <nav class="st-404-suggest" aria-label="Forslag">
+            <p>Måske leder du efter:</p>
+            <ul>
+              {items.map((i) => (
+                <li>
+                  <a href={i.href}>{i.label}</a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
+      </section>
+    )
+  }
+</Base>
+
+<style>
+  .st-404 { max-width: 640px; margin: 0 auto; padding: 72px 20px; text-align: center; }
+  .st-404 h1 { font-size: 2rem; margin: 0 0 12px; }
+  .st-404-home { display: inline-block; margin-top: 8px; padding: 12px 24px; background: #1a1a1a; color: #fff; text-decoration: none; border-radius: 8px; }
+  .st-404-suggest { margin-top: 32px; }
+  .st-404-suggest ul { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: center; }
+</style>

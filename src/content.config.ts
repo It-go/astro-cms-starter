@@ -160,6 +160,16 @@ export const siteSettingsSchema = z.object({
       log_url: z.string().optional(),
     })
     .default({}),
+  // 301/302-redirects (STD-7): emitteres til Cloudflare Pages _redirects ved build.
+  redirects: z
+    .array(
+      z.object({
+        from: z.string().default(""),
+        to: z.string().default(""),
+        permanent: z.boolean().default(true),
+      }),
+    )
+    .default([]),
 });
 
 const settings = defineCollection({
