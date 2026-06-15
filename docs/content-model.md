@@ -22,6 +22,7 @@ src/content/**           (markdown/frontmatter — det kunden redigerer)
 
 | Collection | Sti | Form | Beskrivelse |
 |---|---|---|---|
+| `settings` | `src/content/settings/site.yml` | file (ét entry) | Globalt kontrolpanel: firma/kontakt. Læses via `getSiteSettings()`. Se [site-settings.md](./site-settings.md). |
 | `pages` | `src/content/pages/<locale>/<slug>.md` | blocks | Sider bygget af **blokke** (se nedenfor). i18n (da/en). |
 | `news` | `src/content/news/<slug>.md` | markdown | Nyheder/blog. Flad. Kan slettes. |
 

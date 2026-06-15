@@ -22,6 +22,42 @@ i18n:
   default_locale: da
 
 collections:
+  # Site-indstillinger — kundens globale kontrolpanel (firma/kontakt). Ét entry, læses af Astro.
+  # Matcher `settings`-collection i src/content.config.ts (check:model holder dem 1:1).
+  - name: settings
+    label: Indstillinger
+    label_singular: Site-indstilling
+    files:
+      - name: site
+        label: Firma & kontakt
+        file: src/content/settings/site.yml
+        hint: "Firmaoplysninger der vises overalt på sitet (fx footer). Gælder begge sprog."
+        fields:
+          - { name: company, label: Firmanavn, widget: string, hint: "Vises i footer og som afsender." }
+          - { name: cvr, label: CVR-nummer, widget: string, required: false, hint: "Vises i footer (god skik/lovkrav for danske virksomheder)." }
+          - { name: address, label: Adresse, widget: string, required: false, hint: "Gade, postnr. og by." }
+          - { name: phone, label: Telefon, widget: string, required: false }
+          - { name: email, label: E-mail, widget: string, required: false }
+          - name: opening_hours
+            label: Åbningstider
+            widget: list
+            required: false
+            hint: "Én linje pr. interval, fx 'Man–fre' → '08–16'."
+            fields:
+              - { name: day, label: Dag(e), widget: string }
+              - { name: hours, label: Tid, widget: string }
+          - name: social
+            label: Sociale links
+            widget: object
+            required: false
+            collapsed: true
+            hint: "Fulde URL'er. Tomme felter skjules på sitet."
+            fields:
+              - { name: facebook, label: Facebook, widget: string, required: false }
+              - { name: instagram, label: Instagram, widget: string, required: false }
+              - { name: linkedin, label: LinkedIn, widget: string, required: false }
+          - { name: logo, label: Logo, widget: image, required: false, hint: "Bruges hvor temaet understøtter logo (header/footer)." }
+
   - name: pages
     label: Sider
     label_singular: Side

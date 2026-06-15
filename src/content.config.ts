@@ -3,7 +3,8 @@
 // `blocks` = ordnet, typet liste (discriminated union på `type`) — 1:1 med @itgo/blocks
 // og Sveltia-collections (studio.config.yml). Redigeres i ITGo Studio, committes via git.
 import { defineCollection, z } from "astro:content";
-import { glob } from "astro/loaders";
+import { glob, file } from "astro/loaders";
+import { parse as parseYaml } from "yaml";
 
 const seo = z
   .object({
@@ -103,5 +104,37 @@ const news = defineCollection({
   }),
 });
 
-export const collections = { pages, news };
+// ── Site-settings (STD-1 / ITG-966) ──────────────────────────────────────────
+// Globalt kontrolpanel (firma/kontakt) — ÉT entry pr. site. Sveltia skriver felterne
+// fladt i roden af site.yml; file()-parseren wrapper det som { site: data } → ét entry
+// med id "site". Alle felter er valgfri (.default/.optional), så et manglende/tomt felt
+// ALDRIG giver build-crash (jf. accept-krav). Holdes 1:1 med studio.config.yml (check:model).
+export const siteSettingsSchema = z.object({
+  company: z.string().default(""),
+  cvr: z.string().optional(),
+  address: z.string().optional(),
+  phone: z.string().optional(),
+  email: z.string().optional(),
+  opening_hours: z
+    .array(z.object({ day: z.string().default(""), hours: z.string().default("") }))
+    .default([]),
+  social: z
+    .object({
+      facebook: z.string().optional(),
+      instagram: z.string().optional(),
+      linkedin: z.string().optional(),
+    })
+    .default({}),
+  logo: z.string().optional(),
+});
+
+const settings = defineCollection({
+  loader: file("src/content/settings/site.yml", {
+    parser: (text) => ({ site: (parseYaml(text) as Record<string, unknown>) ?? {} }),
+  }),
+  schema: siteSettingsSchema,
+});
+
+export const collections = { pages, news, settings };
 export type Block = z.infer<typeof block>;
+export type SiteSettings = z.infer<typeof siteSettingsSchema>;

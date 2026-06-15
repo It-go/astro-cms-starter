@@ -2,6 +2,7 @@
 // Basis-layout: <head> med SEO + hreflang + lang. Tailwind v4 er wired (global.css);
 // brandes via @itgo/design-system i Wave 2. Indhold escapes af Astro.
 import "../styles/global.css";
+import { getSiteSettings } from "../lib/settings";
 interface Alt {
   locale: string;
   href: string;
@@ -15,6 +16,9 @@ interface Props {
 }
 const { title, description, ogImage, locale, alternates = [] } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+// Globale site-indstillinger (STD-1) — altid defineret, felter kan være tomme.
+const site = await getSiteSettings();
+const hasSocial = !!(site.social.facebook || site.social.instagram || site.social.linkedin);
 ---
 <!doctype html>
 <html lang={locale}>
@@ -45,10 +49,44 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
       .st-footer a { color: #9cf; margin: 0 8px; }
       blockquote { border-left: 3px solid #ccc; margin: 12px 0; padding: 8px 16px; }
       cite { display: block; margin-top: 8px; color: #666; }
+      .st-sitefooter { background: #111; color: #cfcfcf; padding: 28px 20px; font-size: 0.95rem; }
+      .st-sitefooter-inner { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 6px; text-align: center; }
+      .st-sitefooter a { color: #9cf; text-decoration: none; }
+      .st-sitefooter-org { font-weight: 600; color: #fff; margin: 0; }
+      .st-sitefooter-contact, .st-sitefooter-social { margin: 0; display: flex; flex-wrap: wrap; gap: 4px 16px; justify-content: center; }
+      .st-sitefooter-hours { list-style: none; padding: 0; margin: 2px 0 0; display: flex; flex-wrap: wrap; gap: 2px 16px; justify-content: center; color: #9a9a9a; }
     </style>
   </head>
   <body class="antialiased">
     <slot />
+    <footer class="st-sitefooter">
+      <div class="st-sitefooter-inner">
+        <p class="st-sitefooter-org">
+          {site.company || "—"}{site.cvr && <span> · CVR {site.cvr}</span>}
+        </p>
+        {(site.address || site.phone || site.email) && (
+          <p class="st-sitefooter-contact">
+            {site.address && <span>{site.address}</span>}
+            {site.phone && <a href={`tel:${site.phone.replace(/\s+/g, "")}`}>{site.phone}</a>}
+            {site.email && <a href={`mailto:${site.email}`}>{site.email}</a>}
+          </p>
+        )}
+        {site.opening_hours.length > 0 && (
+          <ul class="st-sitefooter-hours">
+            {site.opening_hours.map((h) => (
+              <li>{h.day}{h.hours && `: ${h.hours}`}</li>
+            ))}
+          </ul>
+        )}
+        {hasSocial && (
+          <p class="st-sitefooter-social">
+            {site.social.facebook && <a href={site.social.facebook} rel="noopener noreferrer">Facebook</a>}
+            {site.social.instagram && <a href={site.social.instagram} rel="noopener noreferrer">Instagram</a>}
+            {site.social.linkedin && <a href={site.social.linkedin} rel="noopener noreferrer">LinkedIn</a>}
+          </p>
+        )}
+      </div>
+    </footer>
     {/* ITGo live-preview-bro (ITG-929 + in-context edit ITG-960) — kun aktiv med ?itgo_preview=1.
         Tovejs: editor→preview (itgo:draft patcher [data-itgo-field]) OG preview→editor (klik-til-redigér
         i edit-mode poster itgo:edit). Fail-safe: ukendte felter/fejl ignoreres. */}
