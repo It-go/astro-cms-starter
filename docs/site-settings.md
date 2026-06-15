@@ -40,6 +40,15 @@ Site-settings er **globale** — firmanavn, CVR, telefon og e-mail er ens på al
 og oversættes ikke. Derfor har collection'en ingen locale-mapper; den samme `site.yml`
 bruges for både `da` og `en`. Sideindhold (collection `pages`) er fortsat i18n pr. locale.
 
+## Navigation / menu (STD-3)
+
+Feltet `menu` (liste, drag-sorteret i Studio) styrer site-headeren. Hvert punkt har
+`label` (da), valgfri `label_en` (fallback = `label`) og `link`. `link` er enten en **intern
+side** (`om-os`, eller tom = forsiden) eller en **fuld URL** (`https://…`). Interne links får
+automatisk den locale-korrekte sti (da `/om-os`, en `/en/om-os`). Renderes af
+`src/components/SiteHeader.astro` (resolver: `src/lib/nav.ts`) med JS-fri mobil-burger.
+Døde interne links giver en build-advarsel (console.warn), ikke en fejl.
+
 ## SEO / schema.org (STD-8)
 
 Felterne `business_type`, `geo` og `price_range` + firma/adresse/tlf/åbningstider bruges til at

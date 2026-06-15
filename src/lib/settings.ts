@@ -11,6 +11,7 @@ const DEFAULTS: SiteSettings = {
   opening_hours: [],
   social: {},
   geo: {},
+  menu: [],
 };
 
 /** Globale site-indstillinger (firma/kontakt). Altid defineret; merget med DEFAULTS. */

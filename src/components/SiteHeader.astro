@@ -1,0 +1,89 @@
+---
+// Site-wide header + navigation (STD-3 / ITG-968). Læser menu fra site-settings,
+// resolver locale-korrekte links og advarer ved døde interne links. JS-fri mobil-burger.
+import { getCollection } from "astro:content";
+import { resolveNav } from "../lib/nav";
+import type { SiteSettings } from "../content.config";
+
+interface Props {
+  menu: SiteSettings["menu"];
+  locale: string;
+  pathname: string;
+  siteName: string;
+}
+const { menu, locale, pathname, siteName } = Astro.props;
+
+// Kendte interne slugs (pages-collection, begge locales) til dead-link-validering.
+const pages = await getCollection("pages");
+const knownSlugs = new Set<string>();
+for (const p of pages) {
+  const [, ...rest] = p.id.split("/");
+  const slug = rest.join("/");
+  if (slug && slug !== "forside") knownSlugs.add(slug);
+}
+
+const { items, deadLinks } = resolveNav(menu ?? [], { locale, pathname, knownSlugs });
+if (deadLinks.length) {
+  console.warn(
+    `[nav] STD-3: ukendt(e) interne menulink(s): ${[...new Set(deadLinks)].join(", ")} — ret i site-settings (menu).`,
+  );
+}
+const homeHref = locale === "en" ? "/en" : "/";
+const menuLabel = "Menu";
+---
+
+{
+  items.length > 0 && (
+    <header class="st-header">
+      <div class="st-header-inner">
+        <a class="st-brand" href={homeHref}>{siteName || "ITGo"}</a>
+        <input type="checkbox" id="st-nav-toggle" class="st-nav-toggle" />
+        <label for="st-nav-toggle" class="st-burger" aria-label={menuLabel}>
+          <span />
+          <span />
+          <span />
+        </label>
+        <nav class="st-nav" aria-label={menuLabel}>
+          <ul>
+            {items.map((i) => (
+              <li>
+                <a
+                  href={i.href}
+                  aria-current={i.current ? "page" : undefined}
+                  {...(i.external ? { rel: "noopener noreferrer" } : {})}
+                >
+                  {i.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+    </header>
+  )
+}
+
+<style>
+  .st-header { background: #fff; border-bottom: 1px solid #ececec; }
+  .st-header-inner {
+    max-width: 1100px; margin: 0 auto; padding: 12px 20px;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+  }
+  .st-brand { font-weight: 700; color: #1a1a1a; text-decoration: none; font-size: 1.15rem; }
+  /* Mobil-først: skjult nav + burger. Checkbox-hack → JS-fri toggle. */
+  .st-nav-toggle { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .st-burger { display: inline-flex; flex-direction: column; gap: 5px; padding: 8px; cursor: pointer; }
+  .st-burger span { width: 24px; height: 2px; background: #1a1a1a; display: block; border-radius: 2px; }
+  .st-nav { display: none; width: 100%; }
+  .st-nav-toggle:checked ~ .st-nav { display: block; }
+  .st-nav-toggle:focus-visible ~ .st-burger { outline: 2px solid #2f5bff; outline-offset: 2px; border-radius: 4px; }
+  .st-nav ul { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+  .st-nav a { display: block; padding: 10px 0; color: #1a1a1a; text-decoration: none; }
+  .st-nav a[aria-current="page"] { font-weight: 700; }
+  @media (min-width: 640px) {
+    .st-burger { display: none; }
+    .st-nav { display: block; width: auto; }
+    .st-nav ul { flex-direction: row; gap: 22px; margin: 0; }
+    .st-nav a { padding: 4px 0; }
+  }
+</style>
