@@ -82,6 +82,18 @@ Vil kunden redigere den selv, opretter de bare en side med slug `privatlivspolit
 `privacy-policy` (en) i Studio — så **vinder deres redigerbare side** over den genererede
 (ingen dublet-rute). Politikken er en **skabelon, ikke juridisk rådgivning** (disclaimer i bunden).
 
+## Redirects + 404 (STD-7)
+
+Feltet `redirects` (liste af `{ from, to, permanent }`) lader kunden/ITGo styre 301/302-
+viderestillinger. Ved build skriver en integration (`src/integrations/emit-redirects.ts` via
+`src/lib/redirects.ts`) en Cloudflare Pages `_redirects`-fil i output-roden (`<from> <to> 301|302`);
+`permanent: false` → 302. Tom liste → ingen fil.
+
+`src/pages/404.astro` er en pæn 404 med navigation-forslag fra menuen (STD-3). Vil kunden have
+sin egen tekst, opretter de en side med slug `404` i Studio — så renderes deres (redigerbare)
+indhold i stedet. Cloudflare Pages serverer `dist/404.html` ved ukendt URL. Auto-redirect ved
+slug-ændring kobler til STD-2 (sidestyring) og kommer dér.
+
 ## SEO / schema.org (STD-8)
 
 Felterne `business_type`, `geo` og `price_range` + firma/adresse/tlf/åbningstider bruges til at

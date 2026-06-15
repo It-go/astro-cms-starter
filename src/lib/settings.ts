@@ -14,6 +14,7 @@ const DEFAULTS: SiteSettings = {
   menu: [],
   tracking: {},
   consent: { enabled: false },
+  redirects: [],
 };
 
 /** Globale site-indstillinger (firma/kontakt). Altid defineret; merget med DEFAULTS. */
