@@ -1,14 +1,14 @@
 ---
 import { getCollection } from "astro:content";
 import Base from "../../layouts/Base.astro";
+import { publishedSorted } from "../../lib/news";
 
-const news = (await getCollection("news")).sort(
-  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
-);
+// GROWTH-4: kun publicerede (ikke kladde, ikke planlagt-i-fremtiden), nyeste først.
+const news = publishedSorted(await getCollection("news"));
 ---
 <Base title="Nyheder" description="Seneste nyt." locale="da">
   <section>
-    <h1>Nyheder</h1>
+    <h1>Nyheder <a href="/rss.xml" style="font-size:.8rem;font-weight:400">RSS</a></h1>
     {news.map((n) => (
       <article style="margin:24px 0">
         <h2 style="margin:0 0 4px"><a href={`/nyheder/${n.id}`}>{n.data.title}</a></h2>

@@ -127,6 +127,10 @@ const news = defineCollection({
     title: z.string(),
     date: z.coerce.date(),
     summary: z.string().optional(),
+    // GROWTH-4 (ITG-981): kladde + planlagt publicering. draft=true skjuler altid;
+    // publishAt i fremtiden = skjult indtil næste build efter tidspunktet (cron-rebuild).
+    draft: z.boolean().default(false),
+    publishAt: z.coerce.date().optional(),
   }),
 });
 

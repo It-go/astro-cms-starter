@@ -1,9 +1,11 @@
 ---
 import { getCollection, render } from "astro:content";
 import Base from "../../layouts/Base.astro";
+import { publishedSorted } from "../../lib/news";
 
 export async function getStaticPaths() {
-  const news = await getCollection("news");
+  // GROWTH-4: generér kun sider for publicerede indlæg (kladde/planlagt skjult).
+  const news = publishedSorted(await getCollection("news"));
   return news.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
 }
 

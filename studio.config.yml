@@ -284,4 +284,6 @@ collections:
       - { name: title, label: Titel, widget: string }
       - { name: date, label: Dato, widget: datetime, picker_utc: false, format: "YYYY-MM-DD" }
       - { name: summary, label: Resumé, widget: text, required: false, hint: "Kort tekst der vises i oversigten over nyheder." }
+      - { name: draft, label: Kladde, widget: boolean, default: false, hint: "Til = skjult på sitet (ikke publiceret endnu)." }
+      - { name: publishAt, label: Planlagt udgivelse, widget: datetime, required: false, picker_utc: false, hint: "Valgfri — indlægget bliver synligt ved næste opdatering efter dette tidspunkt." }
       - { name: body, label: Indhold, widget: markdown }
