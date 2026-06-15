@@ -69,6 +69,17 @@ collections:
               - { name: latitude, label: Breddegrad (lat), widget: string, required: false }
               - { name: longitude, label: Længdegrad (lng), widget: string, required: false }
           - { name: price_range, label: Prisniveau, widget: string, required: false, hint: "Fx '$$' — vises som priceRange i Google." }
+          # Navigation (STD-3) — træk for at sortere. Renderes som site-header + mobil-menu.
+          - name: menu
+            label: Menu (navigation)
+            label_singular: Menupunkt
+            widget: list
+            required: false
+            hint: "Træk for at sortere. Link: intern side ('om-os' eller tom = forsiden) eller fuld URL (https://…)."
+            fields:
+              - { name: label, label: Tekst (dansk), widget: string }
+              - { name: label_en, label: Tekst (engelsk), widget: string, required: false, hint: "Valgfri — bruges på engelske sider. Tom = samme som dansk." }
+              - { name: link, label: Link, widget: string, required: false, hint: "Intern: 'om-os' eller tom = forside. Ekstern: https://…" }
 
   - name: pages
     label: Sider
