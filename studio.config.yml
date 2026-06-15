@@ -34,6 +34,15 @@ collections:
         hint: "Firmaoplysninger der vises overalt på sitet (fx footer). Gælder begge sprog."
         fields:
           - { name: company, label: Firmanavn, widget: string, hint: "Vises i footer og som afsender." }
+          - name: theme
+            label: Tema
+            widget: select
+            default: minimal-sort
+            hint: "Sitets visuelle tema (farver + fonte). Skift = hele sitet får nyt udtryk; indholdet bevares."
+            options:
+              - { label: "Minimal sort", value: minimal-sort }
+              - { label: "Varm håndværk (terracotta + slab)", value: varm-haandvaerk }
+              - { label: "Klassisk blå (tillid)", value: klassisk-blaa }
           - { name: cvr, label: CVR-nummer, widget: string, required: false, hint: "Vises i footer (god skik/lovkrav for danske virksomheder)." }
           - { name: address, label: Adresse, widget: string, required: false, hint: "Gade, postnr. og by." }
           - { name: phone, label: Telefon, widget: string, required: false }

@@ -8,6 +8,7 @@ import type { SiteSettings } from "../content.config";
 // siteSettingsSchema (kun de felter der ikke er rene optional behøver en default her).
 const DEFAULTS: SiteSettings = {
   company: "",
+  theme: "minimal-sort",
   opening_hours: [],
   social: {},
   geo: {},

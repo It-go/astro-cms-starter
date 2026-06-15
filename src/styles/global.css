@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./themes.css"; /* GROWTH-9 (ITG-986): tema-token-pakker (--st-*) + data-theme-switch */
 
 /* ITGo design-tokens (lean v1). Erstattes/udvides af @itgo/design-system i Wave 2. */
 @theme {

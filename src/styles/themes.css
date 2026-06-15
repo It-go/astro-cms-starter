@@ -1,0 +1,66 @@
+/* GROWTH-9 (ITG-986): tema = token-pakke. Komponenterne er ens; temaet bytter kun
+   --st-*-variabler (farver, fonte, radius). Vælges via settings.theme → data-theme på <html>.
+   :root = sikker default (= "minimal-sort"), så et site uden tema-valg ser uændret ud.
+   Nye temaer tilføjes som en [data-theme="navn"]-blok her + en option i studio.config.yml. */
+:root {
+  --st-color-bg: #ffffff;
+  --st-color-text: #1a1a1a;
+  --st-color-heading: #1a1a1a;
+  --st-color-brand: #1a1a1a;
+  --st-color-on-brand: #ffffff;
+  --st-color-muted: #666666;
+  --st-color-border: #cccccc;
+  --st-footer-bg: #111111;
+  --st-footer-text: #cfcfcf;
+  --st-footer-link: #99ccff;
+  --st-font-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --st-font-display: var(--st-font-body);
+  --st-radius: 8px;
+  --st-radius-sm: 6px;
+}
+
+/* Minimal sort — = default (eksplicit for klarhed). */
+[data-theme="minimal-sort"] {
+  --st-color-bg: #ffffff;
+  --st-color-text: #1a1a1a;
+  --st-color-heading: #1a1a1a;
+  --st-color-brand: #1a1a1a;
+  --st-color-border: #cccccc;
+  --st-footer-bg: #111111;
+}
+
+/* Varm håndværk — terracotta + slab-serif. Til murer/tømrer/service. */
+[data-theme="varm-haandvaerk"] {
+  --st-color-bg: #fbf8f4;
+  --st-color-text: #2a2118;
+  --st-color-heading: #2e1a0e;
+  --st-color-brand: #c9561c;
+  --st-color-on-brand: #ffffff;
+  --st-color-muted: #6b5d4f;
+  --st-color-border: #e3d9cd;
+  --st-footer-bg: #2e1a0e;
+  --st-footer-text: #e7dccd;
+  --st-footer-link: #f0a06a;
+  --st-font-body: "Nunito", system-ui, sans-serif;
+  --st-font-display: "Zilla Slab", Georgia, serif;
+  --st-radius: 4px;
+  --st-radius-sm: 3px;
+}
+
+/* Klassisk blå — dyb blå + serif. Til advokat/revisor/VVS (tillid). */
+[data-theme="klassisk-blaa"] {
+  --st-color-bg: #ffffff;
+  --st-color-text: #243044;
+  --st-color-heading: #16243a;
+  --st-color-brand: #1f4e79;
+  --st-color-on-brand: #ffffff;
+  --st-color-muted: #5b6472;
+  --st-color-border: #d6dde6;
+  --st-footer-bg: #16243a;
+  --st-footer-text: #c7d2e0;
+  --st-footer-link: #8fb8e8;
+  --st-font-body: "Inter", system-ui, sans-serif;
+  --st-font-display: "Source Serif 4", Georgia, serif;
+  --st-radius: 8px;
+  --st-radius-sm: 6px;
+}
