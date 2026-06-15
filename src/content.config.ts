@@ -141,6 +141,8 @@ const news = defineCollection({
 // ALDRIG giver build-crash (jf. accept-krav). Holdes 1:1 med studio.config.yml (check:model).
 export const siteSettingsSchema = z.object({
   company: z.string().default(""),
+  // GROWTH-9 (ITG-986): visuelt tema (token-pakke) — sættes på <html data-theme>. Default = uændret look.
+  theme: z.enum(["minimal-sort", "varm-haandvaerk", "klassisk-blaa"]).default("minimal-sort"),
   cvr: z.string().optional(),
   address: z.string().optional(),
   phone: z.string().optional(),

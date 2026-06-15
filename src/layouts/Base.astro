@@ -39,13 +39,24 @@ const breadcrumbLd = isHome
     ]);
 const jsonLd = [businessLd, breadcrumbLd].filter((b): b is Record<string, unknown> => b != null);
 const ldJson = (o: Record<string, unknown>) => JSON.stringify(o).replace(/</g, "\\u003c");
+// GROWTH-9 (ITG-986): visuelt tema (token-pakke) → data-theme på <html>. Hvert tema kan kræve
+// webfonte (kun det aktive temas fonte loades). minimal-sort bruger system-fonte (intet load).
+const theme = site.theme || "minimal-sort";
+const THEME_FONTS: Record<string, string> = {
+  "varm-haandvaerk": "https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Zilla+Slab:wght@600;700&display=swap",
+  "klassisk-blaa": "https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Source+Serif+4:wght@600;700&display=swap",
+};
+const themeFontHref = THEME_FONTS[theme];
 ---
 <!doctype html>
-<html lang={locale}>
+<html lang={locale} data-theme={theme}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
+    {themeFontHref && <link rel="preconnect" href="https://fonts.googleapis.com" />}
+    {themeFontHref && <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />}
+    {themeFontHref && <link rel="stylesheet" href={themeFontHref} />}
     {description && <meta name="description" content={description} />}
     <link rel="canonical" href={canonical} />
     {alternates.map((a) => <link rel="alternate" hreflang={a.locale} href={new URL(a.href, Astro.site).toString()} />)}
@@ -58,26 +69,27 @@ const ldJson = (o: Record<string, unknown>) => JSON.stringify(o).replace(/</g, "
     <Analytics token={site.analytics.cf_web_analytics_token} />
     <style is:global>
       * { box-sizing: border-box; }
-      body { margin: 0; font: 16px/1.6 system-ui, sans-serif; color: #1a1a1a; }
+      body { margin: 0; font: 16px/1.6 var(--st-font-body); color: var(--st-color-text); background: var(--st-color-bg); }
+      h1, h2, h3 { font-family: var(--st-font-display); color: var(--st-color-heading); }
       img { max-width: 100%; height: auto; display: block; }
       section { padding: 48px 20px; max-width: 1100px; margin: 0 auto; }
       .st-hero { position: relative; text-align: center; padding: 96px 20px; }
       .st-hero h1 { font-size: 2.5rem; margin: 0 0 12px; }
-      .st-btn { display: inline-block; margin-top: 16px; padding: 12px 24px; background: #1a1a1a; color: #fff; text-decoration: none; border-radius: 8px; }
+      .st-btn { display: inline-block; margin-top: 16px; padding: 12px 24px; background: var(--st-color-brand); color: var(--st-color-on-brand); text-decoration: none; border-radius: var(--st-radius); }
       .st-grid-items { display: grid; gap: 12px; }
       .st-form { display: flex; flex-direction: column; gap: 8px; max-width: 480px; }
-      .st-form input, .st-form textarea { padding: 10px; border: 1px solid #ccc; border-radius: 6px; font: inherit; }
-      .st-form button { padding: 12px; border: 0; background: #1a1a1a; color: #fff; border-radius: 8px; cursor: pointer; }
-      .st-footer { background: #111; color: #eee; padding: 32px 20px; text-align: center; }
-      .st-footer a { color: #9cf; margin: 0 8px; }
-      blockquote { border-left: 3px solid #ccc; margin: 12px 0; padding: 8px 16px; }
-      cite { display: block; margin-top: 8px; color: #666; }
-      .st-sitefooter { background: #111; color: #cfcfcf; padding: 28px 20px; font-size: 0.95rem; }
+      .st-form input, .st-form textarea { padding: 10px; border: 1px solid var(--st-color-border); border-radius: var(--st-radius-sm); font: inherit; }
+      .st-form button { padding: 12px; border: 0; background: var(--st-color-brand); color: var(--st-color-on-brand); border-radius: var(--st-radius); cursor: pointer; }
+      .st-footer { background: var(--st-footer-bg); color: var(--st-footer-text); padding: 32px 20px; text-align: center; }
+      .st-footer a { color: var(--st-footer-link); margin: 0 8px; }
+      blockquote { border-left: 3px solid var(--st-color-border); margin: 12px 0; padding: 8px 16px; }
+      cite { display: block; margin-top: 8px; color: var(--st-color-muted); }
+      .st-sitefooter { background: var(--st-footer-bg); color: var(--st-footer-text); padding: 28px 20px; font-size: 0.95rem; }
       .st-sitefooter-inner { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 6px; text-align: center; }
-      .st-sitefooter a { color: #9cf; text-decoration: none; }
-      .st-sitefooter-org { font-weight: 600; color: #fff; margin: 0; }
+      .st-sitefooter a { color: var(--st-footer-link); text-decoration: none; }
+      .st-sitefooter-org { font-weight: 600; color: var(--st-footer-text); margin: 0; }
       .st-sitefooter-contact, .st-sitefooter-social { margin: 0; display: flex; flex-wrap: wrap; gap: 4px 16px; justify-content: center; }
-      .st-sitefooter-hours { list-style: none; padding: 0; margin: 2px 0 0; display: flex; flex-wrap: wrap; gap: 2px 16px; justify-content: center; color: #9a9a9a; }
+      .st-sitefooter-hours { list-style: none; padding: 0; margin: 2px 0 0; display: flex; flex-wrap: wrap; gap: 2px 16px; justify-content: center; color: var(--st-footer-text); opacity: .7; }
       .st-sitefooter-cookie { margin: 4px 0 0; }
       .st-sitefooter-cookiebtn { font: inherit; background: none; border: 0; color: #9cf; text-decoration: underline; cursor: pointer; padding: 0; }
       .st-sitefooter-legal { margin: 2px 0 0; }
