@@ -40,6 +40,18 @@ studio.config.yml           # ITGo Studio (Sveltia) collections — matcher bloc
 4. Brand via `@itgo/design-system` (Wave 2).
 5. Kunden logger ind på `studio.itgo.dk`, redigerer, udgiver → live < 1 min.
 
+## Leverance (design → byg → aflever)
+
+Den fulde leverancemodel — Claude Design-prompt til at designe sitet, byg, organisk SEO og en
+afleverings-prompt der genererer en kunde-præsentation — ligger i:
+
+- **`docs/itgo-studio-site-playbook.md`** — komplet runbook (6 trin + onboarding + gotchas +
+  deploy + SEO + Prompt-skabelon A & B).
+- **`docs/byggeproces-og-aflevering.md`** — kort overblik + generisk afleverings-deck-prompt.
+
+Det er de samme to prompts, som CRM-ens site-wizard (Sites → "+ Tilføj site") indlejrer på
+trin 1 (Design) og trin 6 (Aflevering).
+
 ## Indholds-model
 
 Hver side er en markdown-fil med frontmatter. `blocks` er en ordnet, typet liste — feltnavne og
