@@ -59,6 +59,17 @@ GTM/Pixel = marketing). Uden samtykke loader intet (GDPR-safe default); cookie-b
 samtykket kommer i **STD-5** og dispatcher `itgo:consent-changed`. Oplagt forkert id-format giver
 en build-advarsel.
 
+## Cookie-consent (STD-5)
+
+Feltet `consent` styrer et GDPR cookie-banner (`src/components/ConsentBanner.astro`,
+tekster i `src/lib/consent.ts`). Slås til med `consent.enabled`. Banneret giver tre kategorier
+(nødvendige altid til; statistik; marketing) og tre valg: Accepter alle · Kun nødvendige · Tilpas.
+Valget gemmes i `localStorage["itgo:consent"]` og dispatcher `itgo:consent-changed`, så **STD-4's
+scripts loader først efter samtykke** i deres kategori. Intet samtykke → kun nødvendige.
+Valget kan ændres igen via "Cookie-indstillinger" i footeren. Samtykke logges lokalt
+(`itgo:consent-log`) + sendes valgfrit til `consent.log_url` (sendBeacon). Tekst (`message`/
+`message_en`) og `policy_url` kan overstyres i settings; ellers bruges indbyggede da/en-tekster.
+
 ## SEO / schema.org (STD-8)
 
 Felterne `business_type`, `geo` og `price_range` + firma/adresse/tlf/åbningstider bruges til at

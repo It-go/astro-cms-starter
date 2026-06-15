@@ -1,0 +1,127 @@
+---
+// Cookie-consent banner (STD-5 / ITG-970). Vises kun når consent.enabled.
+// Skriver localStorage[CONSENT_KEY] + dispatcher `itgo:consent-changed` → STD-4's
+// TrackingScripts loader straks de tilladte scripts. Genåbnes via [data-itgo-consent-open].
+import type { SiteSettings } from "../content.config";
+import { consentTexts, CONSENT_KEY, CONSENT_VERSION } from "../lib/consent";
+
+interface Props {
+  consent: SiteSettings["consent"];
+  locale: string;
+}
+const { consent, locale } = Astro.props;
+const t = consentTexts(locale);
+const message = (locale === "en" ? consent.message_en : consent.message)?.trim() || t.message;
+const policyUrl = consent.policy_url?.trim();
+const logUrl = consent.log_url?.trim();
+---
+
+<div
+  id="itgo-consent"
+  class="itgo-consent"
+  role="dialog"
+  aria-label={t.title}
+  aria-live="polite"
+  hidden
+  data-key={CONSENT_KEY}
+  data-version={CONSENT_VERSION}
+  data-log-url={logUrl}
+>
+  <div class="itgo-consent-box">
+    <p class="itgo-consent-msg">
+      {message}
+      {policyUrl && (
+        <a class="itgo-consent-policy" href={policyUrl}>
+          {t.policy}
+        </a>
+      )}
+    </p>
+    <div class="itgo-consent-actions">
+      <button type="button" class="itgo-consent-btn itgo-consent-primary" data-consent-all>{t.acceptAll}</button>
+      <button type="button" class="itgo-consent-btn" data-consent-necessary>{t.necessaryOnly}</button>
+      <button type="button" class="itgo-consent-btn itgo-consent-link" data-consent-customize aria-expanded="false">{t.customize}</button>
+    </div>
+    <div class="itgo-consent-panel" data-consent-panel hidden>
+      <label class="itgo-consent-cat">
+        <input type="checkbox" checked disabled />
+        <span>{t.necessary} <small>{t.necessaryHint}</small></span>
+      </label>
+      <label class="itgo-consent-cat">
+        <input type="checkbox" id="itgo-cat-stats" />
+        <span>{t.statistics} <small>{t.statisticsHint}</small></span>
+      </label>
+      <label class="itgo-consent-cat">
+        <input type="checkbox" id="itgo-cat-mkt" />
+        <span>{t.marketing} <small>{t.marketingHint}</small></span>
+      </label>
+      <button type="button" class="itgo-consent-btn itgo-consent-primary" data-consent-save>{t.save}</button>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  {`(function () {
+  var banner = document.getElementById("itgo-consent");
+  if (!banner) return;
+  var KEY = banner.getAttribute("data-key") || "itgo:consent";
+  var VER = parseInt(banner.getAttribute("data-version") || "1", 10);
+  var LOG_URL = banner.getAttribute("data-log-url") || "";
+  function read() { try { return JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) { return null; } }
+  function show() { banner.hidden = false; }
+  function hide() { banner.hidden = true; }
+  function save(stats, mkt) {
+    var rec = { necessary: true, statistics: !!stats, marketing: !!mkt, ts: new Date().toISOString(), v: VER };
+    try { localStorage.setItem(KEY, JSON.stringify(rec)); } catch (e) {}
+    try {
+      var log = JSON.parse(localStorage.getItem(KEY + "-log") || "[]");
+      log.push(rec);
+      localStorage.setItem(KEY + "-log", JSON.stringify(log.slice(-50)));
+    } catch (e) {}
+    if (LOG_URL && navigator.sendBeacon) {
+      try { navigator.sendBeacon(LOG_URL, new Blob([JSON.stringify(rec)], { type: "application/json" })); } catch (e) {}
+    }
+    hide();
+    try { window.dispatchEvent(new CustomEvent("itgo:consent-changed", { detail: rec })); } catch (e) {}
+  }
+  function q(sel) { return banner.querySelector(sel); }
+  var allBtn = q("[data-consent-all]"), necBtn = q("[data-consent-necessary]");
+  var custBtn = q("[data-consent-customize]"), panel = q("[data-consent-panel]"), saveBtn = q("[data-consent-save]");
+  if (allBtn) allBtn.addEventListener("click", function () { save(true, true); });
+  if (necBtn) necBtn.addEventListener("click", function () { save(false, false); });
+  if (custBtn && panel) custBtn.addEventListener("click", function () {
+    var willOpen = panel.hidden;
+    panel.hidden = !willOpen;
+    custBtn.setAttribute("aria-expanded", willOpen ? "true" : "false");
+  });
+  if (saveBtn) saveBtn.addEventListener("click", function () {
+    var s = document.getElementById("itgo-cat-stats"), m = document.getElementById("itgo-cat-mkt");
+    save(s && s.checked, m && m.checked);
+  });
+  window.addEventListener("itgo:consent-reopen", show);
+  document.addEventListener("click", function (e) {
+    var el = e.target && e.target.closest ? e.target.closest("[data-itgo-consent-open]") : null;
+    if (el) { e.preventDefault(); show(); }
+  });
+  var cur = read();
+  if (!cur || cur.v !== VER) show();
+})();`}
+</script>
+
+<style>
+  .itgo-consent { position: fixed; inset: auto 0 0 0; z-index: 9999; padding: 16px; display: flex; justify-content: center; }
+  .itgo-consent[hidden] { display: none; }
+  .itgo-consent-box { background: #fff; color: #1a1a1a; max-width: 640px; width: 100%; border: 1px solid #ddd; border-radius: 12px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.18); padding: 18px 20px; }
+  .itgo-consent-msg { margin: 0 0 12px; font-size: 0.95rem; line-height: 1.5; }
+  .itgo-consent-policy { margin-left: 6px; color: #2f5bff; }
+  .itgo-consent-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+  .itgo-consent-btn { font: inherit; padding: 10px 16px; border-radius: 8px; border: 1px solid #1a1a1a; background: #fff; color: #1a1a1a; cursor: pointer; }
+  .itgo-consent-primary { background: #1a1a1a; color: #fff; }
+  .itgo-consent-link { border-color: transparent; text-decoration: underline; padding: 10px 8px; }
+  .itgo-consent-panel { margin-top: 14px; display: flex; flex-direction: column; gap: 10px; }
+  .itgo-consent-panel[hidden] { display: none; }
+  .itgo-consent-cat { display: flex; gap: 10px; align-items: flex-start; font-size: 0.9rem; }
+  .itgo-consent-cat small { display: block; color: #666; }
+  @media (min-width: 560px) {
+    .itgo-consent-actions { flex-wrap: nowrap; }
+  }
+</style>

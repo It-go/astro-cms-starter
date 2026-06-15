@@ -6,6 +6,7 @@ import { getSiteSettings } from "../lib/settings";
 import { localBusinessJsonLd, breadcrumbJsonLd } from "../lib/schema-org";
 import SiteHeader from "../components/SiteHeader.astro";
 import TrackingScripts from "../components/TrackingScripts.astro";
+import ConsentBanner from "../components/ConsentBanner.astro";
 interface Alt {
   locale: string;
   href: string;
@@ -73,6 +74,8 @@ const ldJson = (o: Record<string, unknown>) => JSON.stringify(o).replace(/</g, "
       .st-sitefooter-org { font-weight: 600; color: #fff; margin: 0; }
       .st-sitefooter-contact, .st-sitefooter-social { margin: 0; display: flex; flex-wrap: wrap; gap: 4px 16px; justify-content: center; }
       .st-sitefooter-hours { list-style: none; padding: 0; margin: 2px 0 0; display: flex; flex-wrap: wrap; gap: 2px 16px; justify-content: center; color: #9a9a9a; }
+      .st-sitefooter-cookie { margin: 4px 0 0; }
+      .st-sitefooter-cookiebtn { font: inherit; background: none; border: 0; color: #9cf; text-decoration: underline; cursor: pointer; padding: 0; }
     </style>
   </head>
   <body class="antialiased">
@@ -104,8 +107,16 @@ const ldJson = (o: Record<string, unknown>) => JSON.stringify(o).replace(/</g, "
             {site.social.linkedin && <a href={site.social.linkedin} rel="noopener noreferrer">LinkedIn</a>}
           </p>
         )}
+        {site.consent.enabled && (
+          <p class="st-sitefooter-cookie">
+            <button type="button" class="st-sitefooter-cookiebtn" data-itgo-consent-open>
+              {locale === "en" ? "Cookie settings" : "Cookie-indstillinger"}
+            </button>
+          </p>
+        )}
       </div>
     </footer>
+    {site.consent.enabled && <ConsentBanner consent={site.consent} locale={locale} />}
     {/* ITGo live-preview-bro (ITG-929 + in-context edit ITG-960) — kun aktiv med ?itgo_preview=1.
         Tovejs: editor→preview (itgo:draft patcher [data-itgo-field]) OG preview→editor (klik-til-redigér
         i edit-mode poster itgo:edit). Fail-safe: ukendte felter/fejl ignoreres. */}

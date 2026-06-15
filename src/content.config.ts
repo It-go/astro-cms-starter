@@ -150,6 +150,16 @@ export const siteSettingsSchema = z.object({
       meta_pixel_id: z.string().optional(),
     })
     .default({}),
+  // Cookie-consent (STD-5): banner slås til via enabled; tekst/policy/log valgfri.
+  consent: z
+    .object({
+      enabled: z.boolean().default(false),
+      message: z.string().optional(),
+      message_en: z.string().optional(),
+      policy_url: z.string().optional(),
+      log_url: z.string().optional(),
+    })
+    .default({}),
 });
 
 const settings = defineCollection({
