@@ -3,6 +3,7 @@
 // brandes via @itgo/design-system i Wave 2. Indhold escapes af Astro.
 import "../styles/global.css";
 import { getSiteSettings } from "../lib/settings";
+import { localBusinessJsonLd, breadcrumbJsonLd } from "../lib/schema-org";
 interface Alt {
   locale: string;
   href: string;
@@ -19,6 +20,19 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
 // Globale site-indstillinger (STD-1) — altid defineret, felter kan være tomme.
 const site = await getSiteSettings();
 const hasSocial = !!(site.social.facebook || site.social.instagram || site.social.linkedin);
+// schema.org structured data (STD-8) — LocalBusiness på alle sider, BreadcrumbList på undersider.
+const base = Astro.site ?? new URL(canonical);
+const businessLd = localBusinessJsonLd(site, { siteUrl: base.toString() });
+const pathname = Astro.url.pathname.replace(/\/$/, "") || "/";
+const isHome = pathname === "/" || pathname === "/en";
+const breadcrumbLd = isHome
+  ? null
+  : breadcrumbJsonLd([
+      { name: locale === "en" ? "Home" : "Forside", item: new URL(locale === "en" ? "/en" : "/", base).toString() },
+      { name: title, item: canonical },
+    ]);
+const jsonLd = [businessLd, breadcrumbLd].filter((b): b is Record<string, unknown> => b != null);
+const ldJson = (o: Record<string, unknown>) => JSON.stringify(o).replace(/</g, "\\u003c");
 ---
 <!doctype html>
 <html lang={locale}>
@@ -33,6 +47,7 @@ const hasSocial = !!(site.social.facebook || site.social.instagram || site.socia
     {description && <meta property="og:description" content={description} />}
     {ogImage && <meta property="og:image" content={ogImage} />}
     <meta name="generator" content={Astro.generator} />
+    {jsonLd.map((o) => <script type="application/ld+json" set:html={ldJson(o)} />)}
     <style is:global>
       * { box-sizing: border-box; }
       body { margin: 0; font: 16px/1.6 system-ui, sans-serif; color: #1a1a1a; }

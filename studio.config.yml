@@ -57,6 +57,18 @@ collections:
               - { name: instagram, label: Instagram, widget: string, required: false }
               - { name: linkedin, label: LinkedIn, widget: string, required: false }
           - { name: logo, label: Logo, widget: image, required: false, hint: "Bruges hvor temaet understøtter logo (header/footer)." }
+          # SEO / Google structured data (STD-8) — bruges til LocalBusiness-rich-results.
+          - { name: business_type, label: Branche (Google), widget: select, required: false, default: LocalBusiness, options: [LocalBusiness, HomeAndConstructionBusiness, GeneralContractor, Electrician, Plumber, RoofingContractor, HVACBusiness, Locksmith, MovingCompany, ProfessionalService, Store, SportsClub, SportsActivityLocation], hint: "Vælg den der bedst beskriver virksomheden — styrer Googles structured data." }
+          - name: geo
+            label: Geo-placering
+            widget: object
+            required: false
+            collapsed: true
+            hint: "Bredde-/længdegrad (valgfri) — viser virksomheden korrekt på Google-kort."
+            fields:
+              - { name: latitude, label: Breddegrad (lat), widget: string, required: false }
+              - { name: longitude, label: Længdegrad (lng), widget: string, required: false }
+          - { name: price_range, label: Prisniveau, widget: string, required: false, hint: "Fx '$$' — vises som priceRange i Google." }
 
   - name: pages
     label: Sider
