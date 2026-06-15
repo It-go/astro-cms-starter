@@ -1,30 +1,43 @@
 ---
+import type { CollectionEntry } from "astro:content";
 import { getCollection } from "astro:content";
 import Base from "../layouts/Base.astro";
 import Blocks from "../components/blocks/Blocks.astro";
+import PrivacyPolicy from "../components/PrivacyPolicy.astro";
 
 // Filsti = <locale>/<slug>. Routing: da forside→"/", da/<slug>→"/<slug>",
 // en forside→"/en", en/<slug>→"/en/<slug>". hreflang-alternates = samme slug på tværs af locales.
+// STD-6: privatlivspolitik genereres som syntetisk rute, MEN yielder hvis kunden selv har en
+// content-side med samme slug (da: privatlivspolitik, en: privacy-policy) → redigerbar.
+type Alt = { locale: string; href: string };
+interface Props {
+  synthetic?: "privacy";
+  entry?: CollectionEntry<"pages">;
+  locale: string;
+  alternates?: Alt[];
+  title?: string;
+}
+
 export async function getStaticPaths() {
   const HOME = "forside";
+  const POLICY: Record<string, string> = { da: "privatlivspolitik", en: "privacy-policy" };
   const toPath = (locale: string, slug: string): string | undefined => {
     const isHome = slug === HOME;
     if (locale === "da") return isHome ? undefined : slug;
     return isHome ? locale : `${locale}/${slug}`;
   };
+
   const pages = await getCollection("pages");
-  // index: logisk slug → { locale → urlpath }
-  const bySlug = new Map<string, { locale: string; href: string }[]>();
+  const bySlug = new Map<string, Alt[]>();
   for (const p of pages) {
     const [locale, ...rest] = p.id.split("/");
     const slug = rest.join("/") || HOME;
-    const path = toPath(locale, slug);
-    const href = "/" + (path ?? "");
     const list = bySlug.get(slug) ?? [];
-    list.push({ locale, href });
+    list.push({ locale, href: "/" + (toPath(locale, slug) ?? "") });
     bySlug.set(slug, list);
   }
-  return pages.map((p) => {
+
+  const pageRoutes = pages.map((p) => {
     const [locale, ...rest] = p.id.split("/");
     const slug = rest.join("/") || HOME;
     return {
@@ -32,17 +45,34 @@ export async function getStaticPaths() {
       props: { entry: p, locale, alternates: bySlug.get(slug) ?? [] },
     };
   });
+
+  // STD-6: syntetiske privatlivspolitik-ruter — kun hvor ingen content-side ejer slug'et.
+  const claimed = new Set(pages.map((p) => p.id));
+  const policyAlternates: Alt[] = Object.entries(POLICY).map(([l, s]) => ({
+    locale: l,
+    href: "/" + (toPath(l, s) ?? ""),
+  }));
+  const policyRoutes = Object.entries(POLICY)
+    .filter(([l, s]) => !claimed.has(`${l}/${s}`))
+    .map(([l, s]) => ({
+      params: { slug: toPath(l, s) },
+      props: {
+        synthetic: "privacy" as const,
+        locale: l,
+        title: l === "en" ? "Privacy policy" : "Privatlivspolitik",
+        alternates: policyAlternates,
+      },
+    }));
+
+  return [...pageRoutes, ...policyRoutes];
 }
 
-const { entry, locale, alternates } = Astro.props;
-const { title, seo, blocks } = entry.data;
+const { synthetic, entry, locale, alternates = [], title: synthTitle } = Astro.props as Props;
+const isPrivacy = synthetic === "privacy";
+const pageTitle = isPrivacy ? (synthTitle ?? "Privatlivspolitik") : entry!.data.seo?.title ?? entry!.data.title;
+const description = isPrivacy ? undefined : entry!.data.seo?.description;
+const ogImage = isPrivacy ? undefined : entry!.data.seo?.og_image;
 ---
-<Base
-  title={seo?.title ?? title}
-  description={seo?.description}
-  ogImage={seo?.og_image}
-  locale={locale}
-  alternates={alternates}
->
-  <Blocks blocks={blocks} />
+<Base title={pageTitle} description={description} ogImage={ogImage} locale={locale} alternates={alternates}>
+  {isPrivacy ? <PrivacyPolicy locale={locale} /> : <Blocks blocks={entry!.data.blocks} />}
 </Base>

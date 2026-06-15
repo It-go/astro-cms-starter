@@ -8,11 +8,12 @@ import { consentTexts, CONSENT_KEY, CONSENT_VERSION } from "../lib/consent";
 interface Props {
   consent: SiteSettings["consent"];
   locale: string;
+  policyHref?: string;
 }
-const { consent, locale } = Astro.props;
+const { consent, locale, policyHref } = Astro.props;
 const t = consentTexts(locale);
 const message = (locale === "en" ? consent.message_en : consent.message)?.trim() || t.message;
-const policyUrl = consent.policy_url?.trim();
+const policyUrl = (policyHref || consent.policy_url)?.trim();
 const logUrl = consent.log_url?.trim();
 ---
 
