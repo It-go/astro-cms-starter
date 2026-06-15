@@ -7,6 +7,7 @@ import { localBusinessJsonLd, breadcrumbJsonLd } from "../lib/schema-org";
 import SiteHeader from "../components/SiteHeader.astro";
 import TrackingScripts from "../components/TrackingScripts.astro";
 import ConsentBanner from "../components/ConsentBanner.astro";
+import Analytics from "../components/Analytics.astro";
 interface Alt {
   locale: string;
   href: string;
@@ -54,6 +55,7 @@ const ldJson = (o: Record<string, unknown>) => JSON.stringify(o).replace(/</g, "
     <meta name="generator" content={Astro.generator} />
     {jsonLd.map((o) => <script type="application/ld+json" set:html={ldJson(o)} />)}
     <TrackingScripts tracking={site.tracking} />
+    <Analytics token={site.analytics.cf_web_analytics_token} />
     <style is:global>
       * { box-sizing: border-box; }
       body { margin: 0; font: 16px/1.6 system-ui, sans-serif; color: #1a1a1a; }

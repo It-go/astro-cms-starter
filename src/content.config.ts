@@ -170,6 +170,8 @@ export const siteSettingsSchema = z.object({
       }),
     )
     .default([]),
+  // Privacy-venlig statistik (STD-9): cookieløs Cloudflare Web Analytics-token.
+  analytics: z.object({ cf_web_analytics_token: z.string().optional() }).default({}),
 });
 
 const settings = defineCollection({

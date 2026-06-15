@@ -115,6 +115,15 @@ collections:
               - { name: from, label: Fra-sti, widget: string, hint: "Gammel sti, fx /gammel-side" }
               - { name: to, label: Til-sti/URL, widget: string, hint: "Ny sti, fx /ny-side, eller fuld URL" }
               - { name: permanent, label: "Permanent (301)", widget: boolean, default: true, hint: "Til = 301 (permanent). Fra = 302 (midlertidig)." }
+          # Privacy-venlig statistik (STD-9) — cookieløs Cloudflare Web Analytics.
+          - name: analytics
+            label: Besøgsstatistik
+            widget: object
+            required: false
+            collapsed: true
+            hint: "Cookieløs statistik (intet samtykke nødvendigt). Token hentes i Cloudflare → Web Analytics."
+            fields:
+              - { name: cf_web_analytics_token, label: Cloudflare Web Analytics-token, widget: string, required: false, hint: "Token fra Cloudflare Web Analytics. Tom = slået fra." }
 
   - name: pages
     label: Sider
