@@ -232,6 +232,31 @@ collections:
               - { name: body, label: Tekst, widget: string, required: false, i18n: true }
               - { name: button_label, label: Knap-tekst, widget: string, required: false, i18n: true }
               - { name: button_href, label: Knap-link, widget: string, required: false, hint: "Hvor knappen fører hen, fx /kontakt." }
+          - name: click_to_call
+            label: Ring nu (klik-til-ring)
+            widget: object
+            hint: "Stor ring-op-knap + valgfri fast bund-bar på mobil. Driver opkald → leads."
+            fields:
+              - { name: heading, label: Overskrift, widget: string, required: false, i18n: true }
+              - { name: note, label: Note, widget: string, required: false, i18n: true, hint: "Fx 'Vi svarer hverdage 7-17'." }
+              - { name: phone, label: Telefonnummer, widget: string, required: false, hint: "Fx +45 12 34 56 78 — bruges til tel:-link." }
+              - { name: label, label: Knap-tekst, widget: string, default: Ring nu, i18n: true }
+              - { name: sticky_mobile, label: Fast bund-bar på mobil, widget: boolean, default: true, hint: "Til = altid-synlig ring-knap i bunden på mobil." }
+          - name: reviews
+            label: Anmeldelser
+            widget: object
+            hint: "Rigtige kundeanmeldelser med stjerner (fx fra Google). Indtast manuelt indtil videre."
+            fields:
+              - { name: heading, label: Overskrift, widget: string, required: false, i18n: true }
+              - { name: show_rating, label: Vis stjerner, widget: boolean, default: true }
+              - name: items
+                label: Anmeldelser
+                widget: list
+                fields:
+                  - { name: author, label: Navn, widget: string }
+                  - { name: rating, label: Stjerner (1-5), widget: number, default: 5, min: 1, max: 5 }
+                  - { name: text, label: Tekst, widget: text, required: false, i18n: true }
+                  - { name: source, label: Kilde, widget: string, required: false, hint: "Fx 'Google' eller 'Trustpilot'." }
           - name: footer
             label: Footer
             widget: object

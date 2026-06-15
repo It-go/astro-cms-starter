@@ -67,6 +67,30 @@ const cta = z.object({
   button_label: z.string().optional(),
   button_href: z.string().optional(),
 });
+// Konverterings-blocks (GROWTH-10 / ITG-987) — service-virksomheders leads.
+const click_to_call = z.object({
+  type: z.literal("click_to_call"),
+  heading: z.string().optional(),
+  note: z.string().optional(), // fx "Vi svarer hverdage 7-17"
+  phone: z.string().optional(),
+  label: z.string().default("Ring nu"),
+  sticky_mobile: z.boolean().default(true), // fast bund-bar på mobil
+});
+const reviews = z.object({
+  type: z.literal("reviews"),
+  heading: z.string().optional(),
+  show_rating: z.boolean().default(true),
+  items: z
+    .array(
+      z.object({
+        author: z.string(),
+        rating: z.number().min(1).max(5).default(5),
+        text: z.string().optional(),
+        source: z.string().optional(), // fx "Google"
+      }),
+    )
+    .default([]),
+});
 const footer = z.object({
   type: z.literal("footer"),
   company: z.string().optional(),
@@ -82,6 +106,8 @@ const block = z.discriminatedUnion("type", [
   contact_form,
   testimonials,
   cta,
+  click_to_call,
+  reviews,
   footer,
 ]);
 
