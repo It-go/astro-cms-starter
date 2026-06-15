@@ -1,0 +1,15 @@
+---
+// Cookieløs besøgsstatistik (STD-9 / ITG-974) — Cloudflare Web Analytics.
+// Loader ALTID når token er sat (cookieløs → intet consent-krav); adskilt fra STD-4's
+// consent-gated GA4/GTM/Pixel. Tom token → intet script.
+interface Props {
+  token?: string;
+}
+const token = Astro.props.token?.trim();
+---
+
+{
+  token && (
+    <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon={JSON.stringify({ token })} />
+  )
+}

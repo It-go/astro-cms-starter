@@ -94,6 +94,14 @@ sin egen tekst, opretter de en side med slug `404` i Studio — så renderes der
 indhold i stedet. Cloudflare Pages serverer `dist/404.html` ved ukendt URL. Auto-redirect ved
 slug-ændring kobler til STD-2 (sidestyring) og kommer dér.
 
+## Besøgsstatistik (STD-9)
+
+Feltet `analytics.cf_web_analytics_token` aktiverer **cookieløs Cloudflare Web Analytics**
+(`Analytics.astro`) — en beacon der indlæses når token er sat. Da den er cookieløs kræver den
+**intet samtykke** og er derfor adskilt fra STD-4's consent-gatede scripts (loader altid).
+Tom token → ingen beacon. Selve dashboardet (besøg, top-sider, kilder) vises i HQ/Studio via
+Cloudflares Analytics API — det hører i CRM-siden (pass 2), ikke i den statiske starter.
+
 ## SEO / schema.org (STD-8)
 
 Felterne `business_type`, `geo` og `price_range` + firma/adresse/tlf/åbningstider bruges til at
