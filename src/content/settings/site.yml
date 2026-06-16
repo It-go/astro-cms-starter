@@ -2,6 +2,7 @@
 # Redigeres i ITGo Studio (Indstillinger → Firma & kontakt). Læses af Astro ved build.
 # Demo-værdier; overskrives pr. kunde ved onboarding. Felter må gerne stå tomme.
 company: ITGo Demo ApS
+legal_name: ""
 cvr: "43046772"
 address: Eksempelvej 1, 9000 Aalborg
 phone: "+45 70 60 50 40"

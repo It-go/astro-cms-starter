@@ -34,6 +34,7 @@ collections:
         hint: "Firmaoplysninger der vises overalt på sitet (fx footer). Gælder begge sprog."
         fields:
           - { name: company, label: Firmanavn, widget: string, hint: "Vises i footer og som afsender." }
+          - { name: legal_name, label: "Juridisk navn (ApS)", widget: string, required: false, hint: "Fulde juridiske navn — bruges i Googles virksomhedsdata. Tom = firmanavnet." }
           - name: theme
             label: Tema
             widget: select
