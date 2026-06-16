@@ -125,6 +125,12 @@ export function localBusinessJsonLd(
     name,
     url: opts.siteUrl,
   };
+  // Virksomhed (ITG-1006): juridisk navn + CVR → legalName/vatID/taxID.
+  if (site.legal_name?.trim()) ld.legalName = site.legal_name.trim();
+  if (site.cvr?.trim()) {
+    ld.vatID = `DK${site.cvr.trim()}`;
+    ld.taxID = site.cvr.trim();
+  }
   if (site.phone) ld.telephone = site.phone;
   if (site.email) ld.email = site.email;
   if (site.logo) ld.logo = new URL(site.logo, opts.siteUrl).toString();
