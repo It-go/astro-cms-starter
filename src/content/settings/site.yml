@@ -14,7 +14,9 @@ social:
   facebook: https://www.facebook.com/
   instagram: https://www.instagram.com/
   linkedin: ""
-logo: /studio-logo.svg
+logo: ""
+favicon: ""
+og_image_default: ""
 business_type: HomeAndConstructionBusiness
 geo:
   latitude: "57.0488"

@@ -157,7 +157,10 @@ export const siteSettingsSchema = z.object({
       linkedin: z.string().optional(),
     })
     .default({}),
+  // Brand-assets (ITG-1005): logo (header/footer/JSON-LD), favicon (<head>), default OG-billede.
   logo: z.string().optional(),
+  favicon: z.string().optional(),
+  og_image_default: z.string().optional(),
   // SEO / schema.org (STD-8): branche-type + geo + prisniveau → LocalBusiness JSON-LD.
   business_type: z.string().optional(),
   geo: z
