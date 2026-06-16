@@ -65,7 +65,9 @@ collections:
               - { name: facebook, label: Facebook, widget: string, required: false }
               - { name: instagram, label: Instagram, widget: string, required: false }
               - { name: linkedin, label: LinkedIn, widget: string, required: false }
-          - { name: logo, label: Logo, widget: image, required: false, hint: "Bruges hvor temaet understøtter logo (header/footer)." }
+          - { name: logo, label: Logo, widget: image, required: false, hint: "Vises i header (og i Googles virksomhedsdata). Tom = firmanavn som tekst." }
+          - { name: favicon, label: Favicon, widget: image, required: false, hint: "Det lille ikon i browserfanen. Helst kvadratisk (fx 512×512 PNG/SVG)." }
+          - { name: og_image_default, label: Standard delebillede, widget: image, required: false, hint: "Bruges når en side deles på Facebook/LinkedIn og ikke selv har et delebillede." }
           # SEO / Google structured data (STD-8) — bruges til LocalBusiness-rich-results.
           - { name: business_type, label: Branche (Google), widget: select, required: false, default: LocalBusiness, options: [LocalBusiness, HomeAndConstructionBusiness, GeneralContractor, Electrician, Plumber, RoofingContractor, HVACBusiness, Locksmith, MovingCompany, ProfessionalService, Store, SportsClub, SportsActivityLocation], hint: "Vælg den der bedst beskriver virksomheden — styrer Googles structured data." }
           - name: geo

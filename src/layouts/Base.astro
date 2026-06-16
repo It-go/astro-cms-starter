@@ -54,6 +54,9 @@ const themeFontHref = THEME_FONTS[theme];
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
+    {/* Favicon (ITG-1005) — kun når kunden har uploadet et; ellers browserens standard. */}
+    {site.favicon && <link rel="icon" href={site.favicon} />}
+    {site.favicon && <link rel="apple-touch-icon" href={site.favicon} />}
     {themeFontHref && <link rel="preconnect" href="https://fonts.googleapis.com" />}
     {themeFontHref && <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />}
     {themeFontHref && <link rel="stylesheet" href={themeFontHref} />}
@@ -62,7 +65,7 @@ const themeFontHref = THEME_FONTS[theme];
     {alternates.map((a) => <link rel="alternate" hreflang={a.locale} href={new URL(a.href, Astro.site).toString()} />)}
     <meta property="og:title" content={title} />
     {description && <meta property="og:description" content={description} />}
-    {ogImage && <meta property="og:image" content={ogImage} />}
+    {(ogImage || site.og_image_default) && <meta property="og:image" content={ogImage || site.og_image_default} />}
     <meta name="generator" content={Astro.generator} />
     {jsonLd.map((o) => <script type="application/ld+json" set:html={ldJson(o)} />)}
     <TrackingScripts tracking={site.tracking} />
@@ -96,7 +99,7 @@ const themeFontHref = THEME_FONTS[theme];
     </style>
   </head>
   <body class="antialiased">
-    <SiteHeader menu={site.menu} locale={locale} pathname={Astro.url.pathname} siteName={site.company} />
+    <SiteHeader menu={site.menu} locale={locale} pathname={Astro.url.pathname} siteName={site.company} logo={site.logo} />
     <slot />
     <footer class="st-sitefooter">
       <div class="st-sitefooter-inner">

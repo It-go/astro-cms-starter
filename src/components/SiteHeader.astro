@@ -10,8 +10,9 @@ interface Props {
   locale: string;
   pathname: string;
   siteName: string;
+  logo?: string;
 }
-const { menu, locale, pathname, siteName } = Astro.props;
+const { menu, locale, pathname, siteName, logo } = Astro.props;
 
 // Kendte interne slugs (pages-collection, begge locales) til dead-link-validering.
 const pages = await getCollection("pages");
@@ -36,7 +37,9 @@ const menuLabel = "Menu";
   items.length > 0 && (
     <header class="st-header">
       <div class="st-header-inner">
-        <a class="st-brand" href={homeHref}>{siteName || "ITGo"}</a>
+        <a class="st-brand" href={homeHref}>
+          {logo ? <img class="st-logo" src={logo} alt={siteName || "Logo"} /> : (siteName || "ITGo")}
+        </a>
         <input type="checkbox" id="st-nav-toggle" class="st-nav-toggle" />
         <label for="st-nav-toggle" class="st-burger" aria-label={menuLabel}>
           <span />
@@ -69,7 +72,8 @@ const menuLabel = "Menu";
     max-width: 1100px; margin: 0 auto; padding: 12px 20px;
     display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;
   }
-  .st-brand { font-weight: 700; color: #1a1a1a; text-decoration: none; font-size: 1.15rem; }
+  .st-brand { font-weight: 700; color: #1a1a1a; text-decoration: none; font-size: 1.15rem; display: inline-flex; align-items: center; }
+  .st-logo { max-height: 40px; width: auto; display: block; }
   /* Mobil-først: skjult nav + burger. Checkbox-hack → JS-fri toggle. */
   .st-nav-toggle { position: absolute; opacity: 0; width: 1px; height: 1px; }
   .st-burger { display: inline-flex; flex-direction: column; gap: 5px; padding: 8px; cursor: pointer; }
