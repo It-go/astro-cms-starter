@@ -17,6 +17,11 @@ social:
 logo: ""
 favicon: ""
 og_image_default: ""
+# Brand-farver (labelisér chunk 4) — tomme = temaet bestemmer. Sæt pr. kunde ved onboarding.
+brand:
+  color_primary: ""
+  color_on_primary: ""
+  color_heading: ""
 business_type: HomeAndConstructionBusiness
 geo:
   latitude: "57.0488"

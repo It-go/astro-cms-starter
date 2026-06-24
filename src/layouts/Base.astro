@@ -47,9 +47,21 @@ const THEME_FONTS: Record<string, string> = {
   "klassisk-blaa": "https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Source+Serif+4:wght@600;700&display=swap",
 };
 const themeFontHref = THEME_FONTS[theme];
+// Brand-farver (labelisér chunk 4 / ITG-1035): kunde-farver overrider temaets --st-* via
+// inline style på <html>. Inline element-style vinder over [data-theme]-reglen i cascaden,
+// så et sat felt slår igennem; tomme felter falder tilbage til temaet. undefined = ingen override.
+const brand = site.brand ?? {};
+const brandStyle =
+  [
+    brand.color_primary && `--st-color-brand:${brand.color_primary}`,
+    brand.color_on_primary && `--st-color-on-brand:${brand.color_on_primary}`,
+    brand.color_heading && `--st-color-heading:${brand.color_heading}`,
+  ]
+    .filter(Boolean)
+    .join(";") || undefined;
 ---
 <!doctype html>
-<html lang={locale} data-theme={theme}>
+<html lang={locale} data-theme={theme} style={brandStyle}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
