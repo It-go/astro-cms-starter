@@ -59,6 +59,8 @@ const brandStyle =
   ]
     .filter(Boolean)
     .join(";") || undefined;
+// SEO-defaults (labelisér chunk 5): fald tilbage til sitets standard-beskrivelse når siden ingen har.
+const metaDescription = description || site.seo_defaults.default_description;
 ---
 <!doctype html>
 <html lang={locale} data-theme={theme} style={brandStyle}>
@@ -72,13 +74,20 @@ const brandStyle =
     {themeFontHref && <link rel="preconnect" href="https://fonts.googleapis.com" />}
     {themeFontHref && <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />}
     {themeFontHref && <link rel="stylesheet" href={themeFontHref} />}
-    {description && <meta name="description" content={description} />}
+    {metaDescription && <meta name="description" content={metaDescription} />}
     <link rel="canonical" href={canonical} />
     {alternates.map((a) => <link rel="alternate" hreflang={a.locale} href={new URL(a.href, Astro.site).toString()} />)}
     <meta property="og:title" content={title} />
-    {description && <meta property="og:description" content={description} />}
+    {metaDescription && <meta property="og:description" content={metaDescription} />}
     {(ogImage || site.og_image_default) && <meta property="og:image" content={ogImage || site.og_image_default} />}
     <meta name="generator" content={Astro.generator} />
+    {/* SEO-defaults (labelisér chunk 5) — søgemaskine-verifikation, kun når sat. */}
+    {site.seo_defaults.google_site_verification && (
+      <meta name="google-site-verification" content={site.seo_defaults.google_site_verification} />
+    )}
+    {site.seo_defaults.bing_site_verification && (
+      <meta name="msvalidate.01" content={site.seo_defaults.bing_site_verification} />
+    )}
     {jsonLd.map((o) => <script type="application/ld+json" set:html={ldJson(o)} />)}
     <TrackingScripts tracking={site.tracking} />
     <Analytics token={site.analytics.cf_web_analytics_token} />

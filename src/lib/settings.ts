@@ -16,6 +16,7 @@ const DEFAULTS: SiteSettings = {
   menu: [],
   tracking: {},
   consent: { enabled: false },
+  seo_defaults: {},
   redirects: [],
   analytics: {},
 };
