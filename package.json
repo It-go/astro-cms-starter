@@ -9,7 +9,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "check:model": "node scripts/check-model.mjs"
+    "check:model": "node scripts/check-model.mjs",
+    "generate:localseo": "node scripts/generate-area-pages.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.2.1",

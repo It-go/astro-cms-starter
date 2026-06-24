@@ -281,6 +281,19 @@ collections:
                 fields:
                   - { name: label, label: Tekst, widget: string, i18n: true }
                   - { name: href, label: Link, widget: string }
+          - name: area_list
+            label: Områdeliste (lokal-SEO)
+            widget: object
+            hint: "Links til nærliggende byer/områder I dækker — styrker lokal SEO og giver intern navigation mellem by-sider."
+            fields:
+              - { name: heading, label: Overskrift, widget: string, required: false, i18n: true }
+              - { name: intro, label: Intro, widget: text, required: false, i18n: true }
+              - name: items
+                label: Områder
+                widget: list
+                fields:
+                  - { name: label, label: Stednavn, widget: string, i18n: true }
+                  - { name: href, label: Link, widget: string, hint: "Fx /tomrer-hobro" }
 
   # Nyheder/blog — flad collection; markdown-body renderes. Kunder kan slette hele collection.
   - name: news

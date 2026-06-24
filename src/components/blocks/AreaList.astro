@@ -1,0 +1,55 @@
+---
+// Områdeliste (lokal-SEO / ITG-1036): intern linking til nabo-byer/områder. Hver by-side
+// linker til de øvrige → område-dækning + intern link-graf som Google bruger til lokal SEO.
+interface Props {
+  heading?: string;
+  intro?: string;
+  items?: { label: string; href: string }[];
+  _idx?: number;
+}
+const { heading, intro, items = [], _idx } = Astro.props;
+// Live-preview-binding (ITG-933): data-itgo-field matcher Sveltia keyPath "blocks.<idx>.<felt>".
+const fp = (f: string) => `blocks.${_idx}.${f}`;
+---
+<section class="st-arealist" aria-label={heading ?? "Områder vi dækker"}>
+  {heading && <h2 data-itgo-field={fp("heading")}>{heading}</h2>}
+  {intro && <p class="st-arealist-intro" data-itgo-field={fp("intro")}>{intro}</p>}
+  {items.length > 0 && (
+    <ul class="st-arealist-items">
+      {items.map((it, j) => (
+        <li>
+          <a href={it.href} data-itgo-field={fp(`items.${j}.label`)}>{it.label}</a>
+        </li>
+      ))}
+    </ul>
+  )}
+</section>
+
+<style>
+  .st-arealist-intro {
+    color: var(--st-color-muted);
+    margin: 0 0 16px;
+  }
+  .st-arealist-items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .st-arealist-items a {
+    display: inline-block;
+    padding: 8px 16px;
+    border: 1px solid var(--st-color-border);
+    border-radius: var(--st-radius);
+    color: var(--st-color-brand);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .st-arealist-items a:hover {
+    background: var(--st-color-brand);
+    color: var(--st-color-on-brand);
+    border-color: var(--st-color-brand);
+  }
+</style>
