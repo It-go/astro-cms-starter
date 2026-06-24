@@ -97,6 +97,14 @@ const footer = z.object({
   address: z.string().optional(),
   links: z.array(z.object({ label: z.string(), href: z.string() })).default([]),
 });
+// Lokal-SEO (ITG-1036): intern linking til nabo-områder/by-sider — styrker lokal SEO
+// (område-dækning + intern link-graf). Genereres af scripts/generate-area-pages.mjs.
+const area_list = z.object({
+  type: z.literal("area_list"),
+  heading: z.string().optional(),
+  intro: z.string().optional(),
+  items: z.array(z.object({ label: z.string(), href: z.string() })).default([]),
+});
 
 const block = z.discriminatedUnion("type", [
   hero,
@@ -109,6 +117,7 @@ const block = z.discriminatedUnion("type", [
   click_to_call,
   reviews,
   footer,
+  area_list,
 ]);
 
 const pages = defineCollection({

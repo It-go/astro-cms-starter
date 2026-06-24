@@ -1,0 +1,16 @@
+{
+  "_comment": "Lokal-SEO-motor (ITG-1036). Kopiér til localseo.config.json, tilpas pr. kunde, og kør `npm run generate:localseo`. Hver area bliver til en kryds-linket landingsside /<prefix>-<slug>. Felterne intro/body/description/faq er valgfri — udelades de, bruges templated dansk standardtekst (AI udfylder dem i chunk 2).",
+  "service": { "name": "Tømrer", "slug_prefix": "tomrer", "noun": "Tømrerarbejde" },
+  "business": "ITGo Demo ApS",
+  "phone": "+45 70 60 50 40",
+  "locale": "da",
+  "areas": [
+    {
+      "name": "Aalborg",
+      "slug": "aalborg",
+      "intro": "Fra murermesterhuse i Hasseris til nybyg i Aalborg Øst — vi laver tag, vinduer, renovering og tilbygning i hele kommunen."
+    },
+    { "name": "Hobro", "slug": "hobro" },
+    { "name": "Terndrup", "slug": "terndrup" }
+  ]
+}
