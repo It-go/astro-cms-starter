@@ -145,6 +145,15 @@ export const siteSettingsSchema = z.object({
   legal_name: z.string().optional(),
   // GROWTH-9 (ITG-986): visuelt tema (token-pakke) — sættes på <html data-theme>. Default = uændret look.
   theme: z.enum(["minimal-sort", "varm-haandvaerk", "klassisk-blaa"]).default("minimal-sort"),
+  // Brand-farver (labelisér chunk 4 / ITG-1035): kunde-specifikke farver der overrider det
+  // valgte temas --st-*-vars via inline style på <html>. Tom = temaets farver bruges uændret.
+  brand: z
+    .object({
+      color_primary: z.string().optional(), // → --st-color-brand (CTA/accent/links)
+      color_on_primary: z.string().optional(), // → --st-color-on-brand (tekst på brand-flader)
+      color_heading: z.string().optional(), // → --st-color-heading (overskrifter)
+    })
+    .default({}),
   cvr: z.string().optional(),
   address: z.string().optional(),
   phone: z.string().optional(),

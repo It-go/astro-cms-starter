@@ -44,6 +44,16 @@ collections:
               - { label: "Minimal sort", value: minimal-sort }
               - { label: "Varm håndværk (terracotta + slab)", value: varm-haandvaerk }
               - { label: "Klassisk blå (tillid)", value: klassisk-blaa }
+          - name: brand
+            label: Brand-farver
+            widget: object
+            required: false
+            collapsed: true
+            hint: "Valgfrit — sæt jeres egne farver oven på temaet. Tomme felter bruger temaets farver."
+            fields:
+              - { name: color_primary, label: Primær farve (knapper/accent), widget: color, required: false, hint: "Fx jeres logo-farve. Bruges til CTA-knapper, links og accenter." }
+              - { name: color_on_primary, label: Tekst på primær farve, widget: color, required: false, hint: "Tekstfarve oven på den primære farve (typisk hvid eller sort) — for læsbarhed på knapper." }
+              - { name: color_heading, label: Overskrift-farve, widget: color, required: false, hint: "Farve på overskrifter. Tom = temaets overskrift-farve." }
           - { name: cvr, label: CVR-nummer, widget: string, required: false, hint: "Vises i footer (god skik/lovkrav for danske virksomheder)." }
           - { name: address, label: Adresse, widget: string, required: false, hint: "Gade, postnr. og by." }
           - { name: phone, label: Telefon, widget: string, required: false }

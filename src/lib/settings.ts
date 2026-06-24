@@ -9,6 +9,7 @@ import type { SiteSettings } from "../content.config";
 const DEFAULTS: SiteSettings = {
   company: "",
   theme: "minimal-sort",
+  brand: {},
   opening_hours: [],
   social: {},
   geo: {},
