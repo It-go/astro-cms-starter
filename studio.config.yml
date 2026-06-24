@@ -146,6 +146,17 @@ collections:
             hint: "Cookieløs statistik (intet samtykke nødvendigt). Token hentes i Cloudflare → Web Analytics."
             fields:
               - { name: cf_web_analytics_token, label: Cloudflare Web Analytics-token, widget: string, required: false, hint: "Token fra Cloudflare Web Analytics. Tom = slået fra." }
+          # SEO-defaults (labelisér chunk 5) — fallback-beskrivelse + verifikation hos Google/Bing.
+          - name: seo_defaults
+            label: SEO-standarder
+            widget: object
+            required: false
+            collapsed: true
+            hint: "Standard-beskrivelse når en side ingen har, + verifikations-koder til Google/Bing Search Console."
+            fields:
+              - { name: default_description, label: Standard meta-beskrivelse, widget: text, required: false, hint: "Bruges når en side ikke selv har en beskrivelse (SEO + delelinks)." }
+              - { name: google_site_verification, label: Google-verifikation, widget: string, required: false, hint: "Koden fra Google Search Console (kun selve værdien)." }
+              - { name: bing_site_verification, label: Bing-verifikation, widget: string, required: false, hint: "Koden fra Bing Webmaster Tools (msvalidate.01)." }
 
   - name: pages
     label: Sider

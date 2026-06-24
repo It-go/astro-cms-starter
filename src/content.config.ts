@@ -215,6 +215,14 @@ export const siteSettingsSchema = z.object({
       log_url: z.string().optional(),
     })
     .default({}),
+  // SEO-defaults (labelisér chunk 5): fallback-beskrivelse + søgemaskine-verifikations-tags.
+  seo_defaults: z
+    .object({
+      default_description: z.string().optional(),
+      google_site_verification: z.string().optional(),
+      bing_site_verification: z.string().optional(),
+    })
+    .default({}),
   // 301/302-redirects (STD-7): emitteres til Cloudflare Pages _redirects ved build.
   redirects: z
     .array(
