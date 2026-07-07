@@ -1,12 +1,11 @@
 ---
-// Per-site /admin (CMS M1.5 / ITG-874) — kundens egen redigerings-indgang på deres EGET domæne.
-// Token leveres via URL-fragment (#itgo_token) fra login.itgo.dk (cookien når ikke uden for .itgo.dk).
-// Kunden ser ALDRIG crm.itgo.dk. Sveltia-bundle hentes centralt fra studio.itgo.dk (så da-UI/0.1 + opdateringer
-// slår igennem på alle sites uden re-deploy). Alt er is:inline (ingen build-deps).
-const GATEWAY = "https://gateway.studio.itgo.dk";
+// ITG-1215: thin front-door stub for studio.itgo.dk's kunde-selvbetjenings-editor.
+// Every ITGo Studio site scaffolded from this template gets this file — forwards the
+// login.itgo.dk token to studio.itgo.dk/admin with &home= for correct re-login redirect
+// on expiry. Replaces the old direct Sveltia-via-gateway mount (gateway.studio.itgo.dk +
+// studio.itgo.dk/sveltia-cms.js), which is being decommissioned (ITG-1215).
+const STUDIO_APP = "https://studio.itgo.dk/admin";
 const LOGIN = "https://login.itgo.dk";
-// Sitets slug: sæt PUBLIC_STUDIO_SLUG pr. site; ellers bruges det eneste site i kundens session.
-const SITE_SLUG = import.meta.env.PUBLIC_STUDIO_SLUG || "";
 ---
 <!doctype html>
 <html lang="da">
@@ -14,68 +13,18 @@ const SITE_SLUG = import.meta.env.PUBLIC_STUDIO_SLUG || "";
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>ITGo Studio — Editor</title>
-    <script is:inline define:vars={{ GATEWAY, LOGIN, SITE_SLUG }}>
-      window.CMS_MANUAL_INIT = true;
-      window.__ITGO = { GATEWAY: GATEWAY, LOGIN: LOGIN, SITE_SLUG: SITE_SLUG };
-    </script>
   </head>
   <body>
-    <noscript>ITGo Studio kræver JavaScript.</noscript>
-    <div id="itgo-loading" style="font:15px system-ui,sans-serif;color:#5a5a6c;padding:40px;text-align:center">Indlæser ITGo Studio…</div>
-    <script is:inline src="https://studio.itgo.dk/sveltia-cms.js?v=3"></script>
-    <script is:inline src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
-    <script is:inline>
+    <div style="font:15px system-ui,sans-serif;color:#5a5a6c;padding:40px;text-align:center">Sender dig til editoren…</div>
+    <script is:inline define:vars={{ STUDIO_APP, LOGIN }}>
       (function () {
-        var I = window.__ITGO;
-        function fail(msg) { var el = document.getElementById("itgo-loading"); if (el) el.textContent = msg; }
-        function gotoLogin() { location.href = I.LOGIN + "/?studio_redirect=" + encodeURIComponent(location.origin + "/admin"); }
-        function decodeJWT(t) {
-          try { return JSON.parse(decodeURIComponent(escape(atob(t.split(".")[1].replace(/-/g, "+").replace(/_/g, "/"))))); }
-          catch (e) { return null; }
+        var home = location.origin + location.pathname;
+        var m = location.hash.match(/itgo_token=([^&]+)/);
+        if (m) {
+          location.replace(STUDIO_APP + "#itgo_token=" + m[1] + "&home=" + encodeURIComponent(home));
+        } else {
+          location.replace(LOGIN + "/?studio_redirect=" + encodeURIComponent(home));
         }
-        // 1) Token fra URL-fragment → localStorage; ryd fragmentet straks (hardening:
-        //    ingen token i browser-historik/URL).
-        if (location.hash && location.hash.indexOf("itgo_token=") !== -1) {
-          var m = location.hash.match(/itgo_token=([^&]+)/);
-          if (m) { try { localStorage.setItem("itgo_token", decodeURIComponent(m[1])); } catch (e) {} }
-          history.replaceState(null, "", location.pathname + location.search);
-        }
-        var token = null;
-        try { token = localStorage.getItem("itgo_token"); } catch (e) {}
-        if (!token) { gotoLogin(); return; }
-
-        var claims = decodeJWT(token) || {};
-        // Seed Sveltia user-cache så signInAutomatically auto-logger ind (ellers vises sign-in-skærmen
-        // selvom token er gyldigt — Sveltia auto-signer kun med en cached bruger). Backenden re-validerer.
-        try { localStorage.setItem("sveltia-cms.user", JSON.stringify({ backendName: "itgo-gateway", token: token, name: claims.sub || "ITGo-bruger", login: claims.sub, email: claims.sub })); } catch (e) {}
-        var sites = claims.sites || [];
-        var slug = I.SITE_SLUG;
-        if (!slug && sites.length === 1) slug = sites[0].slug;
-        var site = null;
-        for (var i = 0; i < sites.length; i++) { if (sites[i].slug === slug) { site = sites[i]; break; } }
-        if (!site || !site.repo) { fail("Du har ikke adgang til dette site (mangler i din session)."); return; }
-
-        var configPath = site.configPath || "studio.config.yml";
-        fetch(I.GATEWAY + "/api/git/sites/" + slug + "/file?path=" + encodeURIComponent(configPath), { headers: { Authorization: "Bearer " + token } })
-          .then(function (r) {
-            if (r.status === 401 || r.status === 403) { try { localStorage.removeItem("itgo_token"); localStorage.removeItem("sveltia-cms.user"); } catch (e) {} gotoLogin(); throw new Error("auth"); }
-            if (!r.ok) throw new Error("HTTP " + r.status);
-            return r.json();
-          })
-          .then(function (j) {
-            var parsed = window.jsyaml.load(j.content) || {};
-            var config = Object.assign({}, parsed, {
-              load_config_file: false,
-              backend: { name: "itgo-gateway", gateway_url: I.GATEWAY, site_slug: slug, repo: site.repo, branch: site.branch || "main" },
-            });
-            (function init() {
-              if (window.CMS && typeof window.CMS.init === "function") {
-                var el = document.getElementById("itgo-loading"); if (el) el.remove();
-                window.CMS.init({ config: config });
-              } else { setTimeout(init, 50); }
-            })();
-          })
-          .catch(function (e) { if (e && e.message !== "auth") fail("Kunne ikke indlæse editoren (" + (e && e.message) + ")."); });
       })();
     </script>
   </body>
