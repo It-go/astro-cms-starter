@@ -14,6 +14,11 @@ import Footer from "./Footer.astro";
 import AreaList from "./AreaList.astro";
 import Services from "./Services.astro";
 import Cases from "./Cases.astro";
+import MatchProgram from "./MatchProgram.astro";
+import TeamRoster from "./TeamRoster.astro";
+import NewsFeed from "./NewsFeed.astro";
+import SponsorGrid from "./SponsorGrid.astro";
+import MemberSignup from "./MemberSignup.astro";
 
 interface Props {
   blocks: Block[];
@@ -34,6 +39,11 @@ const MAP = {
   area_list: AreaList,
   services: Services,
   cases: Cases,
+  match_program: MatchProgram,
+  team_roster: TeamRoster,
+  news_feed: NewsFeed,
+  sponsor_grid: SponsorGrid,
+  member_signup: MemberSignup,
 } as const;
 ---
 {

@@ -1,0 +1,39 @@
+---
+// PACK-CLUB (ITG-775): sponsorer — logo, navn, valgfrit link. Redaktør-styret indhold
+// (ITG-853 E2/A leverer det faktiske Terndrup IF-indhold via denne generelle blok;
+// self-serve sponsor-tilmelding er et separat, senere modul — se STUDIO-FORMS/Phase D).
+import { safeUrl } from "./safe";
+interface Props {
+  heading?: string;
+  items?: { logo?: string; name: string; link?: string }[];
+  _idx?: number;
+}
+const { heading, items = [], _idx } = Astro.props;
+// Live-preview-binding (ITG-933): data-itgo-field matcher Sveltia keyPath "blocks.<idx>.<felt>".
+const fp = (f: string) => `blocks.${_idx}.${f}`;
+---
+<section class="st-sponsors">
+  {heading && <h2 data-itgo-field={fp("heading")}>{heading}</h2>}
+  <div class="st-sponsors-grid">
+    {items.map((s, j) => {
+      const Tag = s.link ? "a" : "div";
+      const linkProps = s.link ? { href: safeUrl(s.link), rel: "noopener", target: "_blank" } : {};
+      return (
+        <Tag class="st-sponsor" {...linkProps}>
+          {s.logo ? (
+            <img src={safeUrl(s.logo)} alt={s.name} data-itgo-field={fp(`items.${j}.logo`)} />
+          ) : (
+            <span data-itgo-field={fp(`items.${j}.name`)}>{s.name}</span>
+          )}
+        </Tag>
+      );
+    })}
+  </div>
+</section>
+
+<style>
+  .st-sponsors-grid { display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); align-items: center; }
+  .st-sponsor { display: flex; align-items: center; justify-content: center; }
+  .st-sponsor img { max-width: 100%; max-height: 72px; object-fit: contain; filter: grayscale(1); opacity: .85; transition: filter .15s, opacity .15s; }
+  .st-sponsor:hover img { filter: none; opacity: 1; }
+</style>

@@ -45,6 +45,11 @@ Blok-typerne (discriminated union på `type`, 1:1 med `@itgo/blocks`):
 | `footer` | company, address, links[] |
 | `services` | heading, items[] (title/description/icon) — PACK-CRAFT (ITG-774) |
 | `cases` | heading, items[] (title/image/description/href) — PACK-CRAFT (ITG-774) |
+| `match_program` | heading, items[] (date/opponent/home_away/result) — PACK-CLUB (ITG-775) |
+| `team_roster` | heading, items[] (name/position/number/image) — PACK-CLUB (ITG-775) |
+| `news_feed` | heading, limit — læser `news`-collection direkte, ingen manuel liste — PACK-CLUB (ITG-775) |
+| `sponsor_grid` | heading, items[] (logo/name/link) — PACK-CLUB (ITG-775) |
+| `member_signup` | heading, intro, submit_label, form_key, fields[] — formular kun (STUDIO-FORMS kobler indsendelse) — PACK-CLUB (ITG-775) |
 
 Sitet renderer blokke generisk (`src/components/blocks/`), så en ny blok-type kræver
 **ét** nyt komponent + skema + config-entry — aldrig per-side arbejde.
