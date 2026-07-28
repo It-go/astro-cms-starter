@@ -316,6 +316,34 @@ collections:
                 fields:
                   - { name: label, label: Stednavn, widget: string, i18n: true }
                   - { name: href, label: Link, widget: string, hint: "Fx /tomrer-hobro" }
+          # Håndværker-pakke (PACK-CRAFT / ITG-774) — generelle blocks til service-virksomheder.
+          - name: services
+            label: Ydelser
+            widget: object
+            hint: "Liste over jeres ydelser — hver med titel, kort beskrivelse og valgfrit ikon."
+            fields:
+              - { name: heading, label: Overskrift, widget: string, required: false, i18n: true }
+              - name: items
+                label: Ydelser
+                widget: list
+                fields:
+                  - { name: title, label: Titel, widget: string, i18n: true }
+                  - { name: description, label: Beskrivelse, widget: text, required: false, i18n: true }
+                  - { name: icon, label: Ikon, widget: string, required: false, hint: "Valgfrit — fx et emoji (🔨, 🏠, 🚪)." }
+          - name: cases
+            label: Referencer
+            widget: object
+            hint: "Eksempler på tidligere opgaver — billede, titel, beskrivelse og valgfrit link."
+            fields:
+              - { name: heading, label: Overskrift, widget: string, required: false, i18n: true }
+              - name: items
+                label: Referencer
+                widget: list
+                fields:
+                  - { name: title, label: Titel, widget: string, i18n: true }
+                  - { name: image, label: Billede, widget: image, required: false }
+                  - { name: description, label: Beskrivelse, widget: text, required: false, i18n: true }
+                  - { name: href, label: Link, widget: string, required: false, hint: "Valgfrit — fx link til flere billeder." }
 
   # Nyheder/blog — flad collection; markdown-body renderes. Kunder kan slette hele collection.
   - name: news

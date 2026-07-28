@@ -43,6 +43,8 @@ Blok-typerne (discriminated union på `type`, 1:1 med `@itgo/blocks`):
 | `testimonials` | heading, items[] (quote/author) |
 | `cta` | heading, body, button_label, button_href |
 | `footer` | company, address, links[] |
+| `services` | heading, items[] (title/description/icon) — PACK-CRAFT (ITG-774) |
+| `cases` | heading, items[] (title/image/description/href) — PACK-CRAFT (ITG-774) |
 
 Sitet renderer blokke generisk (`src/components/blocks/`), så en ny blok-type kræver
 **ét** nyt komponent + skema + config-entry — aldrig per-side arbejde.

@@ -1,0 +1,32 @@
+---
+// PACK-CRAFT (ITG-774): ydelser — titel + beskrivelse + valgfrit ikon (emoji). Generel
+// håndværker-block, valideres på JM Tømrer men sælges bredt til service-virksomheder.
+interface Props {
+  heading?: string;
+  items?: { title: string; description?: string; icon?: string }[];
+  _idx?: number;
+}
+const { heading, items = [], _idx } = Astro.props;
+// Live-preview-binding (ITG-933): data-itgo-field matcher Sveltia keyPath "blocks.<idx>.<felt>".
+const fp = (f: string) => `blocks.${_idx}.${f}`;
+---
+<section class="st-services">
+  {heading && <h2 data-itgo-field={fp("heading")}>{heading}</h2>}
+  <div class="st-services-grid">
+    {items.map((it, j) => (
+      <article class="st-service">
+        {it.icon && <span class="st-service-icon" aria-hidden="true" data-itgo-field={fp(`items.${j}.icon`)}>{it.icon}</span>}
+        <h3 data-itgo-field={fp(`items.${j}.title`)}>{it.title}</h3>
+        {it.description && <p data-itgo-field={fp(`items.${j}.description`)}>{it.description}</p>}
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  .st-services-grid { display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+  .st-service { text-align: left; }
+  .st-service-icon { display: block; font-size: 2rem; line-height: 1; margin-bottom: 8px; }
+  .st-service h3 { margin: 0 0 4px; }
+  .st-service p { margin: 0; color: var(--st-color-muted); }
+</style>
