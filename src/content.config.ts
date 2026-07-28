@@ -105,6 +105,35 @@ const area_list = z.object({
   intro: z.string().optional(),
   items: z.array(z.object({ label: z.string(), href: z.string() })).default([]),
 });
+// Håndværker-pakke (PACK-CRAFT / ITG-774): generelle blocks til service-virksomheder
+// (valideres på JM Tømrer, sælges bredt). `reviews` findes allerede (GROWTH-10 / ITG-987).
+const services = z.object({
+  type: z.literal("services"),
+  heading: z.string().optional(),
+  items: z
+    .array(
+      z.object({
+        title: z.string(),
+        description: z.string().optional(),
+        icon: z.string().optional(), // fx et emoji — intet ikon-bibliotek nødvendigt
+      }),
+    )
+    .default([]),
+});
+const cases = z.object({
+  type: z.literal("cases"),
+  heading: z.string().optional(),
+  items: z
+    .array(
+      z.object({
+        title: z.string(),
+        image: z.string().optional(),
+        description: z.string().optional(),
+        href: z.string().optional(), // valgfrit link til fx en større sag/galleri
+      }),
+    )
+    .default([]),
+});
 
 const block = z.discriminatedUnion("type", [
   hero,
@@ -118,6 +147,8 @@ const block = z.discriminatedUnion("type", [
   reviews,
   footer,
   area_list,
+  services,
+  cases,
 ]);
 
 const pages = defineCollection({

@@ -12,6 +12,8 @@ import ClickToCall from "./ClickToCall.astro";
 import Reviews from "./Reviews.astro";
 import Footer from "./Footer.astro";
 import AreaList from "./AreaList.astro";
+import Services from "./Services.astro";
+import Cases from "./Cases.astro";
 
 interface Props {
   blocks: Block[];
@@ -30,6 +32,8 @@ const MAP = {
   reviews: Reviews,
   footer: Footer,
   area_list: AreaList,
+  services: Services,
+  cases: Cases,
 } as const;
 ---
 {

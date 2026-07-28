@@ -1,0 +1,37 @@
+---
+// PACK-CRAFT (ITG-774): referencer — billede + titel + beskrivelse + valgfrit link.
+// Generel håndværker-block (services/cases/reviews), sælges bredt til service-virksomheder.
+import { safeUrl } from "./safe";
+interface Props {
+  heading?: string;
+  items?: { title: string; image?: string; description?: string; href?: string }[];
+  _idx?: number;
+}
+const { heading, items = [], _idx } = Astro.props;
+// Live-preview-binding (ITG-933): data-itgo-field matcher Sveltia keyPath "blocks.<idx>.<felt>".
+const fp = (f: string) => `blocks.${_idx}.${f}`;
+---
+<section class="st-cases">
+  {heading && <h2 data-itgo-field={fp("heading")}>{heading}</h2>}
+  <div class="st-cases-grid">
+    {items.map((it, j) => {
+      const Tag = it.href ? "a" : "div";
+      const linkProps = it.href ? { href: safeUrl(it.href) } : {};
+      return (
+        <Tag class="st-case" {...linkProps}>
+          {it.image && <img src={safeUrl(it.image)} alt="" data-itgo-field={fp(`items.${j}.image`)} />}
+          <h3 data-itgo-field={fp(`items.${j}.title`)}>{it.title}</h3>
+          {it.description && <p data-itgo-field={fp(`items.${j}.description`)}>{it.description}</p>}
+        </Tag>
+      );
+    })}
+  </div>
+</section>
+
+<style>
+  .st-cases-grid { display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  .st-case { text-align: left; color: inherit; text-decoration: none; display: block; }
+  .st-case img { border-radius: var(--st-radius); margin-bottom: 8px; aspect-ratio: 4/3; object-fit: cover; }
+  .st-case h3 { margin: 0 0 4px; }
+  .st-case p { margin: 0; color: var(--st-color-muted); }
+</style>
