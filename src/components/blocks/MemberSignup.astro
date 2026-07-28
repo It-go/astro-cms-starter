@@ -1,0 +1,47 @@
+---
+// PACK-CLUB (ITG-775): medlems-tilmelding — samme mønster som contact_form. Renderer kun
+// selve formularen; data-st-form hookes af forms→Leads-endpointet (STUDIO-FORMS / ITG-771),
+// som er et separat lag/repo og ikke bygget her.
+interface Field {
+  name: string;
+  label?: string;
+  type?: "text" | "email" | "tel" | "textarea";
+  required?: boolean;
+}
+interface Props {
+  heading?: string;
+  intro?: string;
+  submit_label?: string;
+  form_key?: string;
+  fields?: Field[];
+  _idx?: number;
+}
+const {
+  heading,
+  intro,
+  submit_label = "Tilmeld",
+  form_key = "member-signup",
+  fields = [],
+  _idx,
+} = Astro.props;
+const allowed = ["email", "tel", "text"];
+// Live-preview-binding (ITG-933): data-itgo-field matcher Sveltia keyPath "blocks.<idx>.<felt>".
+const fp = (f: string) => `blocks.${_idx}.${f}`;
+---
+<section class="st-signup" id="tilmelding">
+  {heading && <h2 data-itgo-field={fp("heading")}>{heading}</h2>}
+  {intro && <p data-itgo-field={fp("intro")}>{intro}</p>}
+  <form class="st-form" method="post" data-st-form={form_key}>
+    {fields.map((f, j) => (
+      <>
+        <label data-itgo-field={fp(`fields.${j}.label`)}>{f.label ?? f.name}</label>
+        {f.type === "textarea" ? (
+          <textarea name={f.name} required={f.required} />
+        ) : (
+          <input type={allowed.includes(f.type ?? "") ? f.type : "text"} name={f.name} required={f.required} />
+        )}
+      </>
+    ))}
+    <button type="submit" data-itgo-field={fp("submit_label")}>{submit_label}</button>
+  </form>
+</section>

@@ -1,0 +1,43 @@
+---
+// PACK-CLUB (ITG-775): kampprogram — dato, modstander, hjemme/ude, resultat.
+interface Match {
+  date: Date;
+  opponent: string;
+  home_away?: "hjemme" | "ude";
+  result?: string;
+}
+interface Props {
+  heading?: string;
+  items?: Match[];
+  _idx?: number;
+}
+const { heading, items = [], _idx } = Astro.props;
+// Live-preview-binding (ITG-933): data-itgo-field matcher Sveltia keyPath "blocks.<idx>.<felt>".
+const fp = (f: string) => `blocks.${_idx}.${f}`;
+const fmt = (d: Date) => new Date(d).toLocaleDateString("da-DK", { year: "numeric", month: "short", day: "numeric" });
+---
+<section class="st-matchprogram">
+  {heading && <h2 data-itgo-field={fp("heading")}>{heading}</h2>}
+  {items.length > 0 && (
+    <ul class="st-mp-list">
+      {items.map((m, j) => (
+        <li class="st-mp-item">
+          <time class="st-mp-date" datetime={new Date(m.date).toISOString()}>{fmt(m.date)}</time>
+          <span class="st-mp-badge" data-home={m.home_away !== "ude"}>{m.home_away === "ude" ? "Ude" : "Hjemme"}</span>
+          <span class="st-mp-opponent" data-itgo-field={fp(`items.${j}.opponent`)}>{m.opponent}</span>
+          <span class="st-mp-result" data-itgo-field={fp(`items.${j}.result`)}>{m.result || "—"}</span>
+        </li>
+      ))}
+    </ul>
+  )}
+</section>
+
+<style>
+  .st-mp-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+  .st-mp-item { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 10px 14px; border: 1px solid var(--st-color-border); border-radius: var(--st-radius); }
+  .st-mp-date { color: var(--st-color-muted); min-width: 7em; }
+  .st-mp-badge { font-size: .8rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--st-color-border); }
+  .st-mp-badge[data-home="true"] { background: var(--st-color-brand); color: var(--st-color-on-brand); }
+  .st-mp-opponent { font-weight: 600; flex: 1; }
+  .st-mp-result { color: var(--st-color-muted); }
+</style>

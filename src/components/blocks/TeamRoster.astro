@@ -1,0 +1,34 @@
+---
+// PACK-CLUB (ITG-775): spillertrup — navn, position, trøjenummer, billede.
+import { safeUrl } from "./safe";
+interface Props {
+  heading?: string;
+  items?: { name: string; position?: string; number?: number; image?: string }[];
+  _idx?: number;
+}
+const { heading, items = [], _idx } = Astro.props;
+// Live-preview-binding (ITG-933): data-itgo-field matcher Sveltia keyPath "blocks.<idx>.<felt>".
+const fp = (f: string) => `blocks.${_idx}.${f}`;
+---
+<section class="st-roster">
+  {heading && <h2 data-itgo-field={fp("heading")}>{heading}</h2>}
+  <div class="st-roster-grid">
+    {items.map((p, j) => (
+      <article class="st-player">
+        {p.image && <img src={safeUrl(p.image)} alt={p.name} data-itgo-field={fp(`items.${j}.image`)} />}
+        {typeof p.number === "number" && <span class="st-player-number">{p.number}</span>}
+        <h3 data-itgo-field={fp(`items.${j}.name`)}>{p.name}</h3>
+        {p.position && <p data-itgo-field={fp(`items.${j}.position`)}>{p.position}</p>}
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  .st-roster-grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+  .st-player { position: relative; text-align: center; }
+  .st-player img { width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: var(--st-radius); margin-bottom: 8px; }
+  .st-player-number { position: absolute; top: 8px; left: 8px; background: var(--st-color-brand); color: var(--st-color-on-brand); font-weight: 700; padding: 2px 8px; border-radius: 999px; font-size: .85rem; }
+  .st-player h3 { margin: 0 0 2px; }
+  .st-player p { margin: 0; color: var(--st-color-muted); }
+</style>

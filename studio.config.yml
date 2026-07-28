@@ -344,6 +344,73 @@ collections:
                   - { name: image, label: Billede, widget: image, required: false }
                   - { name: description, label: Beskrivelse, widget: text, required: false, i18n: true }
                   - { name: href, label: Link, widget: string, required: false, hint: "Valgfrit — fx link til flere billeder." }
+          # Sportsklub-pakke (PACK-CLUB / ITG-775) — generelle blocks til sportsklubber.
+          - name: match_program
+            label: Kampprogram
+            widget: object
+            hint: "Kommende og spillede kampe — dato, modstander, hjemme/ude og resultat."
+            fields:
+              - { name: heading, label: Overskrift, widget: string, required: false, i18n: true }
+              - name: items
+                label: Kampe
+                widget: list
+                fields:
+                  - { name: date, label: Dato, widget: date, format: "YYYY-MM-DD" }
+                  - { name: opponent, label: Modstander, widget: string }
+                  - { name: home_away, label: Hjemme/ude, widget: select, default: hjemme, options: [hjemme, ude] }
+                  - { name: result, label: Resultat, widget: string, required: false, hint: "Fx '3-1'. Tomt = ikke spillet endnu." }
+          - name: team_roster
+            label: Spillertrup
+            widget: object
+            hint: "Spillere med navn, position, trøjenummer og billede."
+            fields:
+              - { name: heading, label: Overskrift, widget: string, required: false, i18n: true }
+              - name: items
+                label: Spillere
+                widget: list
+                fields:
+                  - { name: name, label: Navn, widget: string }
+                  - { name: position, label: Position, widget: string, required: false }
+                  - { name: number, label: Trøjenummer, widget: number, required: false }
+                  - { name: image, label: Billede, widget: image, required: false }
+          - name: news_feed
+            label: Nyheder (seneste)
+            widget: object
+            hint: "Viser automatisk de seneste nyheder fra Nyheder-collection — ingen manuel liste at vedligeholde."
+            fields:
+              - { name: heading, label: Overskrift, widget: string, required: false, i18n: true }
+              - { name: limit, label: Antal, widget: number, default: 3, min: 1, max: 12, hint: "Hvor mange seneste nyheder der vises." }
+          - name: sponsor_grid
+            label: Sponsorer
+            widget: object
+            hint: "Sponsor-logoer i et gitter — hver med navn og valgfrit link."
+            fields:
+              - { name: heading, label: Overskrift, widget: string, required: false, i18n: true }
+              - name: items
+                label: Sponsorer
+                widget: list
+                fields:
+                  - { name: logo, label: Logo, widget: image, required: false }
+                  - { name: name, label: Navn, widget: string }
+                  - { name: link, label: Link, widget: string, required: false, hint: "Fx sponsorens hjemmeside." }
+          - name: member_signup
+            label: Medlems-tilmelding
+            widget: object
+            hint: "En tilmeldingsformular til nye medlemmer. Indsendelser kobles til HQ Leads i et senere trin."
+            fields:
+              - { name: heading, label: Overskrift, widget: string, required: false, i18n: true }
+              - { name: intro, label: Intro, widget: text, required: false, i18n: true }
+              - { name: submit_label, label: Send-knap, widget: string, default: Tilmeld, i18n: true }
+              - { name: form_key, label: Form-nøgle, widget: string, default: member-signup, hint: "Teknisk id der samler indsendelserne. Lad stå som det er." }
+              - name: fields
+                label: Felter
+                widget: list
+                hint: "Felterne i tilmeldingsformularen (fx navn, e-mail, telefon)."
+                fields:
+                  - { name: name, label: Navn (teknisk), widget: string, hint: "Teknisk feltnavn uden mellemrum/æøå — vises ikke til besøgende." }
+                  - { name: label, label: Label, widget: string, i18n: true }
+                  - { name: type, label: Type, widget: select, options: [text, email, tel, textarea], default: text }
+                  - { name: required, label: Påkrævet, widget: boolean, default: false }
 
   # Nyheder/blog — flad collection; markdown-body renderes. Kunder kan slette hele collection.
   - name: news

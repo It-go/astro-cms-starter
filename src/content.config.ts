@@ -135,6 +135,76 @@ const cases = z.object({
     .default([]),
 });
 
+// Sportsklub-pakke (PACK-CLUB / ITG-775): generel klub-pakke (valideres på Terndrup IF,
+// sælges til andre danske klubber). `member_signup` renderer kun selve formularen — samme
+// mønster som `contact_form` (data-st-form-hook); den faktiske indsendelse→HQ Leads-kobling
+// er STUDIO-FORMS (ITG-771), et andet lag/repo, ikke bygget her.
+const match_program = z.object({
+  type: z.literal("match_program"),
+  heading: z.string().optional(),
+  items: z
+    .array(
+      z.object({
+        date: z.coerce.date(),
+        opponent: z.string(),
+        home_away: z.enum(["hjemme", "ude"]).default("hjemme"),
+        result: z.string().optional(), // fx "3-1" — tomt = ikke spillet endnu
+      }),
+    )
+    .default([]),
+});
+const team_roster = z.object({
+  type: z.literal("team_roster"),
+  heading: z.string().optional(),
+  items: z
+    .array(
+      z.object({
+        name: z.string(),
+        position: z.string().optional(),
+        number: z.number().optional(),
+        image: z.string().optional(),
+      }),
+    )
+    .default([]),
+});
+// Trækker direkte fra `news`-collection (GROWTH-4 / ITG-981) i stedet for en dubleret
+// manuel liste — én sandhed for nyheder, RSS-feedet og denne blok.
+const news_feed = z.object({
+  type: z.literal("news_feed"),
+  heading: z.string().optional(),
+  limit: z.number().min(1).max(12).default(3),
+});
+const sponsor_grid = z.object({
+  type: z.literal("sponsor_grid"),
+  heading: z.string().optional(),
+  items: z
+    .array(
+      z.object({
+        logo: z.string().optional(),
+        name: z.string(),
+        link: z.string().optional(),
+      }),
+    )
+    .default([]),
+});
+const member_signup = z.object({
+  type: z.literal("member_signup"),
+  heading: z.string().optional(),
+  intro: z.string().optional(),
+  submit_label: z.string().default("Tilmeld"),
+  form_key: z.string().default("member-signup"),
+  fields: z
+    .array(
+      z.object({
+        name: z.string(),
+        label: z.string().optional(),
+        type: z.enum(["text", "email", "tel", "textarea"]).default("text"),
+        required: z.boolean().default(false),
+      }),
+    )
+    .default([]),
+});
+
 const block = z.discriminatedUnion("type", [
   hero,
   text,
@@ -149,6 +219,11 @@ const block = z.discriminatedUnion("type", [
   area_list,
   services,
   cases,
+  match_program,
+  team_roster,
+  news_feed,
+  sponsor_grid,
+  member_signup,
 ]);
 
 const pages = defineCollection({
